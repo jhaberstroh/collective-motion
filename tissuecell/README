@@ -3,7 +3,6 @@ INTRODUCTION
 A reenactment of Physical Review E 74, 061908 (2006), Szabo et. al.
 
 
-
 REQUIREMENTS
 ===================
 . A compiler with the C++11 standard
@@ -11,9 +10,11 @@ REQUIREMENTS
 
 INSTRUCTIONS
 ===================
-Use make to build the single-precision and double-precision codes, or use:
->> make single_precision
-or 
->> make double_precision
+Use make to build the code and the testing suite, call: 
+>> make 
+
+To build with double precision, call:
+>> make "CXXFLAGS=-D DP"
+
 
 
