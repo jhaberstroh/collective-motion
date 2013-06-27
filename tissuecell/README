@@ -4,6 +4,16 @@ A reenactment of Physical Review E 74, 061908 (2006), Szabo et. al.
 
 
 
+REQUIREMENTS
+===================
+. A compiler with the C++11 standard
+. MersenneTwister.h from Makoto Matsumoto, historically hosted at http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
 
 INSTRUCTIONS
 ===================
+Use make to build the single-precision and double-precision codes, or use:
+>> make single_precision
+or 
+>> make double_precision
+
+

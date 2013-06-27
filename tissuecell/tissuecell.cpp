@@ -1,7 +1,17 @@
 #include "tissuecell.h"
+#include "MersenneTwister.h"
+#include <typeinfo>
+#include <algorithm>
+
 
 int main(){
 	TissueCell::Unit x = TissueCell::Unit::Create_xya(1.3, 1.3, 3.14);
-	TissueCell::Vector myvector(10, x);
-	std::cout << typeid(myvector[5].x).name() << std::endl;
+	TissueCell::Vector myvector(100);
+
+	MTRand rng;
+	std::generate(myvector.begin(), myvector.end(), [rng](TissueCell::Unit) {TissueCell::Unit::CreateRandom(rng)} )
+
+	for (auto& cell : myvector){
+		std::cout << "Random x position: " << cell.x << std::endl;
+	}
 }

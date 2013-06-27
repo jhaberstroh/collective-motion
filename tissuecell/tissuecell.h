@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <vector>
-#include <typeinfo>
+#include "MersenneTwister.h"
 
 #ifdef DP
 #define MACRO_CELLTYPE CellData<double>
@@ -32,12 +32,17 @@ namespace TissueCell{
 		{
 			return CellData(mx,my,ma);
 		}
+
+		static CellData<value_type> CreateRandom(MTRand& rng)
+		{
+			return CellData(rng.rand(), rng.rand(), rng.rand());
+		}
 	};
 
 	typedef MACRO_CELLTYPE Unit;
 	typedef std::vector<Unit> Vector;
 
-		
+	
 
 
 }
