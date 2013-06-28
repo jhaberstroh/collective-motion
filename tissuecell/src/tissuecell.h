@@ -14,36 +14,33 @@
 #include <iostream>
 #include <vector>
 #include "MersenneTwister.h"
-#include "dependency.h"
 
 
 namespace TissueCell{
-
 	// Create the data struct with either a float or a double to vary precision
-	template <class sp_or_dp>
-		struct CellData
+	typedef MACRO_PRECISION RealType;
+
+	struct CellData
 	{
-		typedef sp_or_dp real_type;
-		real_type angle;
-		real_type x;
-		real_type y;
-		real_type Fx;
-		real_type Fy;
+		RealType angle;
+		RealType x;
+		RealType y;
+		RealType Fx;
+		RealType Fy;
 	
-		CellData(real_type mx, real_type my, real_type ma): x(mx), y(my), angle(ma) {};
+		CellData(RealType mx, RealType my, RealType ma): x(mx), y(my), angle(ma) {};
 		CellData(): x(0), y(0), angle(0) {};
 
-		static CellData<real_type> Create_xya(real_type mx, real_type my, real_type ma){
+		static CellData Create_xya(RealType mx, RealType my, RealType ma){
 			return CellData(mx,my,ma);}
 
-		static CellData<real_type> CreateRandom(MTRand& rng){
+		static CellData CreateRandom(MTRand& rng){
 			return CellData(rng.rand(), rng.rand(), rng.rand());}
 
-		void TakeStep(real_type dt, real_type v0, real_type mob, real_type t_relax, real_type noise, real_type box_size, MTRand& rng);
+		void TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng);
 	};
 
-	typedef MACRO_PRECISION RealType;
-	typedef CellData<MACRO_PRECISION> Unit;
+	typedef CellData Unit;
 	typedef std::vector<Unit> Vector;
 
 	/// Create a mutual interaction, where each cell moves relative to the other. Because forces are additive

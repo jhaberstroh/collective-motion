@@ -23,13 +23,13 @@ TESTOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(TESTSRC)))
 
 
 
-.PHONY: clean all
+.PHONY: clean sortaclean all
 all: TissueCells $(TESTOBJ:.o=)
 
-clean:
+sortaclean:
 	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d)
 
-veryclean:
+clean:
 	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d) TissueCells $(TESTOBJ:.o=)
 
 # .o dependencies will build automatically
@@ -38,7 +38,7 @@ TissueCells: $(OBJ) $(MAINOBJ)
 
 # .o dependencies will build automatically
 test/%: test/%.o $(OBJ)
-	$(CC) -o $@ $^ $(OBJ) $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 
 include $(OBJ:.o=.d)

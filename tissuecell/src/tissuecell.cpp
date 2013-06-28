@@ -6,24 +6,24 @@
 #include <stdexcept>
 #include <cmath>
 #include <vector>
+#include <functional>
 
 
 namespace TissueCell{
-	template <class real_type>
-		void CellData<real_type>::TakeStep(real_type dt, real_type v0, real_type mob, real_type t_relax, real_type noise, real_type box_size, MTRand& rng)
+	void CellData::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng)
 	{
 		// Handle invalid arguments
 		if (mob < 0){ throw std::invalid_argument("mob < 0"); }
 		if (t_relax < 0){ throw std::invalid_argument("t_relax < 0"); }
 		if (noise < 0){ throw std::invalid_argument("noise < 0"); }
 
-		real_type dx = ((std::cos(angle) * v0) + (mob * Fx)) * dt;
-		real_type dy = ((std::sin(angle) * v0) + (mob * Fy)) * dt;
+		RealType dx = ((std::cos(angle) * v0) + (mob * Fx)) * dt;
+		RealType dy = ((std::sin(angle) * v0) + (mob * Fy)) * dt;
 	
-		real_type vmag = sqrt(dx * dx + dy * dy); 
+		RealType vmag = sqrt(dx * dx + dy * dy); 
 
 		// arcsin of a cross product of two normalized vecors will give the deflection in theta.
-		real_type step_noise = rng.rand() * noise;
+		RealType step_noise = rng.rand() * noise;
 		angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag) + step_noise;
 
 		x += dx;
@@ -31,8 +31,8 @@ namespace TissueCell{
 
 		// Map x and y [0, box_size) periodically
 		// e.g. box_size = 10.0, sends 10.0 -> 0.0
-		if (x > box_size){ x = x % box_size; } 		
-		if (y > box_size){ y = y % box_size; } 
+		if (x > box_size){ x += RealType(int(x/box_size)) * box_size ; } 		
+		if (y > box_size){ y += RealType(int(y/box_size)) * box_size; } 
 		// e.g. box_size = 10.0, then -10.0 -> ceil(1) -> 0 and  -10.1 -> ceil(1.01) -> 9.99
 		if (x < 0){ x = x + ceil(-x/box_size) * box_size; }  
 		if (y < 0){ y = y + ceil(-y/box_size) * box_size; }
