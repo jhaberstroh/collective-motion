@@ -9,10 +9,12 @@ CPPFLAGS += --std=c++11
 
 
 # Generate the source & required libraries in each $(module)/module.mk file through the include
+MAIN :=
 LIBS :=
 SRC := 
 include $(patsubst %,%/module.mk,$(MODULES))
 OBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(SRC)))
+MAINOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(MAIN)))
 
 # Generate the source for testing
 TESTSRC :=
@@ -31,12 +33,12 @@ veryclean:
 	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d) TissueCells $(TESTOBJ:.o=)
 
 # .o dependencies will build automatically
-TissueCells: $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LIBS)
+TissueCells: $(OBJ) $(MAINOBJ)
+	$(CC) -o $@ $(OBJ) $(MAINOBJ) $(LIBS)
 
 # .o dependencies will build automatically
-test/%: test/%.o
-	$(CC) -o $@ $^ $(LIBS)
+test/%: test/%.o $(OBJ)
+	$(CC) -o $@ $^ $(OBJ) $(LIBS)
 
 
 include $(OBJ:.o=.d)
