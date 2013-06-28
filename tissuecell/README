@@ -14,7 +14,7 @@ To use make to build the code and the testing suite, call:
 >> make 
 
 To build with double precision, call:
+>> make clean
 >> make "CXXFLAGS=-D DP"
-
 
 

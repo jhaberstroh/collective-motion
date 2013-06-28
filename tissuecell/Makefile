@@ -27,10 +27,10 @@ TESTOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(TESTSRC)))
 all: TissueCells $(TESTOBJ:.o=)
 
 sortaclean:
-	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d)
+	rm $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d)
 
 clean:
-	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d) TissueCells $(TESTOBJ:.o=)
+	rm $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d) TissueCells $(TESTOBJ:.o=)
 
 # .o dependencies will build automatically
 TissueCells: $(OBJ) $(MAINOBJ)
