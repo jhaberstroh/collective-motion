@@ -53,8 +53,9 @@ $(CXXTEST)/%.t: $(CXXTEST)/%.o $(OBJ)
 	$(CC) -o $@ $^ $(LIBS)
 
 $(CXXTEST)/%.o: $(CXXTEST)/%.h
-	cxxtestgen --error-printer -o $*.cpp $<
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $*.cpp
+	cd $(CXXTEST); \
+	cxxtestgen --error-printer -o $*.cpp $*.h;
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $(CXXTEST)/$*.cpp;
 
 include $(OBJ:.o=.d)
 
