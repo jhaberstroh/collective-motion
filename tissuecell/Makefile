@@ -1,6 +1,5 @@
 # Based on Peter Miller's "Recursive Make Considered Harmful", 1997, AUUGN Journal of AUUG Inc., 19(1), pp. 14-25
 MODULES:= src  #name the subfolders to compile
-TESTING:= test
 CXXTEST:= cxxtest
 CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))
@@ -18,33 +17,22 @@ include $(patsubst %,%/module.mk,$(MODULES))
 OBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(SRC)))
 MAINOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(MAIN)))
 
-# Generate the source for testing
-TESTSRC :=
-include $(patsubst %,%/module.mk,$(TESTING))
-TESTOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(TESTSRC)))
-
 CXXTSRC :=
 include $(patsubst %,%/module.mk,$(CXXTEST))
 CXXTOBJ := $(patsubst %.h,%.o,$(filter %.h,$(CXXTSRC)))
-
 
 .PHONY: clean sortaclean all tests
 all: TissueCells $(TESTOBJ:.o=.t) cxxtests
 
 sortaclean:
-	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d)
-
+	rm $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) 
 clean:
-	rm $(OBJ) $(OBJ:.o=.d) $(TESTOBJ) $(TESTOBJ:.o=.d) TissueCells $(TESTOBJ:.o=)
+	rm $(CXXTOBJ) $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
 
 cxxtests: $(CXXTOBJ:.o=.t)
 
 # .o dependencies will build automatically
 TissueCells: $(OBJ) $(MAINOBJ)
-	$(CC) -o $@ $^ $(LIBS)
-
-# .o dependencies will build automatically
-$(TESTING)/%.t: $(TESTING)/%.o $(OBJ)
 	$(CC) -o $@ $^ $(LIBS)
 
 # .o dependencies build according to cxxtest rules.
