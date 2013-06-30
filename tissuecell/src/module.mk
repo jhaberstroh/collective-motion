@@ -1,3 +1,3 @@
 SRC += src/tissuecell.cpp
-SRC += src/tissuecell.h
+SRC += src/analyze.cpp
 MAIN += src/main.cpp
