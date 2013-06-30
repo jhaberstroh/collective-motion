@@ -5,7 +5,7 @@ CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))
 # C Compiler not passed to ./depend.sh
 CC=g++
-CPPFLAGS += --std=c++11
+CPPFLAGS += --std=c++11 -g
 
 
 # Generate the source & required libraries in each $(module)/module.mk file through the include
@@ -27,7 +27,7 @@ all: TissueCells $(TESTOBJ:.o=.t) cxxtests
 sortaclean:
 	rm $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) 
 clean:
-	rm $(CXXTOBJ) $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
+	rm $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
 
 cxxtests: $(CXXTOBJ:.o=.t)
 

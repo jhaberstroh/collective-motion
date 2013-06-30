@@ -26,20 +26,21 @@ namespace TissueCell{
 		RealType step_noise = rng.rand() * noise;
 		angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag) + step_noise;
 
-		x += dx;
-		y += dy;
+		this->x += dx;
+		this->y += dy;
 
 		// Map x and y [0, box_size) periodically
 		// e.g. box_size = 10.0, sends 10.0 -> 0.0
-		if (x > box_size){ x += RealType(int(x/box_size)) * box_size ; } 		
-		if (y > box_size){ y += RealType(int(y/box_size)) * box_size; } 
+		if (this->x > box_size){ this->x += RealType(int(this->x/box_size)) * box_size ; } 		
+		if (this->y > box_size){ this->y += RealType(int(this->y/box_size)) * box_size; } 
 		// e.g. box_size = 10.0, then -10.0 -> ceil(1) -> 0 and  -10.1 -> ceil(1.01) -> 9.99
-		if (x < 0){ x = x + ceil(-x/box_size) * box_size; }  
-		if (y < 0){ y = y + ceil(-y/box_size) * box_size; }
+		if (this->x < 0){ this->x = this->x + ceil(-this->x/box_size) * box_size; }  
+		if (this->y < 0){ this->y = this->y + ceil(-this->y/box_size) * box_size; }
 
-		// Assertions to match the above mappingsdefinitions
-		assert(x < box_size && x >= 0);
-		assert(y < box_size && y >= 0);
+		// Assertions to match the above definitions
+		// Furthermore: Do not allow a particle to step more than a box width.
+		assert(this->x < box_size && this->x >= 0);
+		assert(this->y < box_size && this->y >= 0);
 
 		// Clear the old forces;
 		Fx = 0;
@@ -48,8 +49,7 @@ namespace TissueCell{
 
 
 
-	void Interact(Unit& cell1, Unit& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
-		/*
+	RealType Interact(Unit& cell1, Unit& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
 		if (Rcut <= Req){ throw std::invalid_argument("Rcut <= Req"); }
 		if (Rcut <= 0){ throw std::invalid_argument("Rcut <= 0"); }
 		if (Req <= 0){ throw std::invalid_argument("Req <= 0"); }
@@ -60,36 +60,43 @@ namespace TissueCell{
 		RealType fx;
 		RealType fy;
 	
-		RealType dx = cell1.x - cell2.x;
-		RealType dy = cell1.y - cell2.y;
+		// Vector points from cell1 to cell2
+		RealType dx = cell2.x - cell1.x;
+		RealType dy = cell2.y - cell1.y;
 		if (dx > box_size / 2.0){ dx -= box_size; }
 		if (dy > box_size / 2.0){ dy -= box_size; }
 		if (dx <-box_size / 2.0){ dx += box_size; }
 		if (dy <-box_size / 2.0){ dy += box_size; }
 		
-		assert(dx <= box_size / 2.0 && dx > -box_size / 2.0)
-		assert(dy <= box_size / 2.0 && dy > -box_size / 2.0)
+		assert(dx <= box_size / 2.0 && dx > -box_size / 2.0);
+		assert(dy <= box_size / 2.0 && dy > -box_size / 2.0);
 
-		RealType dist = sqrt(dx * dx + dy * dy);
-		RealType mag;
+		RealType Fmag;
+		RealType dist = sqrt(dx*dx + dy*dy);
+		dx /= dist;
+		dy /= dist;
 
 		if (dist > Rcut){
-			mag = 0;
+			Fmag = 0;
+			return Fmag;
 		}
 		if (dist < Req){
-			mag = (dist - Req)/Req;
-			assert(mag  > 0)
+			Fmag = Frep * (dist - Req)/Req;
+			assert(Fmag  > 0);
 		}
 		if (dist > Req){
-			mag = (dist - Req)/(Rcut - Req);
-			assert(mag < 0) 
+			Fmag = Fadh * (dist - Req)/(Rcut - Req);
+			assert(Fmag < 0);
 		}
-		RealType mag = 
-		*/
-		cell1.Fx = 1;
-		cell1.Fy = 1;
-		cell2.Fx = -1;
-		cell2.Fy = -1;
+
+
+		// Normalized dist vector points from cell1 to cell 2;
+		cell2.Fx += dx * Fmag;
+		cell2.Fy += dy * Fmag;
+
+		cell1.Fx -= dx * Fmag;
+		cell1.Fy -= dy * Fmag;
+		return Fmag;
 	}
 }
 

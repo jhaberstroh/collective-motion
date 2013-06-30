@@ -28,8 +28,8 @@ namespace TissueCell{
 		RealType Fx;
 		RealType Fy;
 	
-		CellData(RealType mx, RealType my, RealType ma): x(mx), y(my), angle(ma) {};
-		CellData(): x(0), y(0), angle(0) {};
+		CellData(RealType mx, RealType my, RealType ma): x(mx), y(my), angle(ma), Fx(0), Fy(0) {};
+		CellData(): x(0), y(0), angle(0), Fx(0), Fy(0) {};
 
 		static CellData Create_xya(RealType mx, RealType my, RealType ma){
 			return CellData(mx,my,ma);}
@@ -47,7 +47,7 @@ namespace TissueCell{
 	///  Interaction range is (-box_size/2, box_size/2] (open on bottom, closed on top).
 	///  All particles must begin inside of the box.
 	///  Throws an invalid_argument exception if Rcut <= Req
-	void Interact(Unit& cell1, Unit& cell2, RealType r_cut, RealType r_eq, RealType box_size, RealType F_adh, RealType F_rep);
+	RealType Interact(Unit& cell1, Unit& cell2, RealType r_cut, RealType r_eq, RealType box_size, RealType F_adh, RealType F_rep);
 
 
 }
