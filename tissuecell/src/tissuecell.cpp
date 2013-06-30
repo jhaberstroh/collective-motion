@@ -17,34 +17,52 @@ namespace TissueCell{
 		if (t_relax < 0){ throw std::invalid_argument("t_relax < 0"); }
 		if (noise < 0){ throw std::invalid_argument("noise < 0"); }
 
-		RealType dx = ((std::cos(angle) * v0) + (mob * Fx)) * dt;
-		RealType dy = ((std::sin(angle) * v0) + (mob * Fy)) * dt;
+		RealType ffffx = this->Fx;
+		RealType ffffy = this->Fy;
+		RealType xxxxx = this->x;
+		RealType yyyyy = this->y;
+		RealType aaaangle = this->angle;
+		
+
+		RealType dxF = (mob * Fx) * dt;
+		RealType dxV = (std::cos(this->angle) * v0) * dt;
+		RealType dx = dxF + dxV;
+		RealType dy = ((std::sin(this->angle) * v0) + (mob * Fy)) * dt;
 	
 		RealType vmag = sqrt(dx * dx + dy * dy); 
 
 		// arcsin of a cross product of two normalized vecors will give the deflection in theta.
 		RealType step_noise = rng.rand() * noise;
-		angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag) + step_noise;
-
+		if (vmag != 0){
+			this->angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag);
+		}
+		this->angle += step_noise;
 		this->x += dx;
 		this->y += dy;
 
+		// Apply periodic topology:
+
 		// Map x and y [0, box_size) periodically
 		// e.g. box_size = 10.0, sends 10.0 -> 0.0
-		if (this->x > box_size){ this->x += RealType(int(this->x/box_size)) * box_size ; } 		
-		if (this->y > box_size){ this->y += RealType(int(this->y/box_size)) * box_size; } 
+		if (this->x > box_size){ this->x -= box_size ;} 		
+		if (this->y > box_size){ this->y -= box_size; } 
 		// e.g. box_size = 10.0, then -10.0 -> ceil(1) -> 0 and  -10.1 -> ceil(1.01) -> 9.99
-		if (this->x < 0){ this->x = this->x + ceil(-this->x/box_size) * box_size; }  
-		if (this->y < 0){ this->y = this->y + ceil(-this->y/box_size) * box_size; }
+		if (this->x < 0){ this->x += box_size; }  
+		if (this->y < 0){ this->y += box_size; }
+
+		RealType twoPi = 2.0 * 3.141592865358979;
+    this->angle -= twoPi * floor( angle / twoPi );	
 
 		// Assertions to match the above definitions
 		// Furthermore: Do not allow a particle to step more than a box width.
+		//  (angle can rotate artibrarily)
 		assert(this->x < box_size && this->x >= 0);
 		assert(this->y < box_size && this->y >= 0);
+		assert(this-> angle < twoPi && this->angle >= 0);
 
 		// Clear the old forces;
-		Fx = 0;
-		Fy = 0;
+		this->Fx = 0;
+		this->Fy = 0;
 	}
 
 
@@ -81,12 +99,14 @@ namespace TissueCell{
 			return Fmag;
 		}
 		if (dist < Req){
-			Fmag = Frep * (dist - Req)/Req;
-			assert(Fmag  > 0);
+			// Flipped the convention from PRE 74, 061908
+			Fmag = Frep * (Req - dist)/Req;
+			assert(Fmag >= 0);
 		}
 		if (dist > Req){
-			Fmag = Fadh * (dist - Req)/(Rcut - Req);
-			assert(Fmag < 0);
+			// Flipped the convention from PRE 74, 061908
+			Fmag = Fadh * (Req - dist)/(Rcut - Req);
+			assert(Fmag <= 0);
 		}
 
 

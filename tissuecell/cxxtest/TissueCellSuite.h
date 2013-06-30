@@ -130,5 +130,21 @@ public:
 		TS_ASSERT_DELTA(u2.y, 3.5, err);
 	}
 
+	void testManyBalance(void){
+		u1 = TissueCell::Unit::Create_xya(3.5, 3.5, 0);
+		u2 = TissueCell::Unit::Create_xya(4.5, 3.5, pi);
+
+		for (int i = 0 ; i < 10000 ; i++){
+			TissueCell::Interact(u1, u2, 4, 2, 10, 0, .8); //Repulsive force of .8 to push particles spaced at 1 by .4
+	
+			u1.TakeStep(1, .4, 1, 100000000000, 0, 10, rng); //dt = 1, v = .4, noise=0
+			u2.TakeStep(1, .4, 1, 100000000000, 0, 10, rng);
+		}
+
+		TS_ASSERT_DELTA(u1.x, 3.5, err);
+		TS_ASSERT_DELTA(u1.y, 3.5, err);
+		TS_ASSERT_DELTA(u2.x, 4.5, err);
+		TS_ASSERT_DELTA(u2.y, 3.5, err);
+	}
 
 };
