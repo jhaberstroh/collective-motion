@@ -22,10 +22,10 @@ include $(patsubst %,%/module.mk,$(CXXTEST))
 CXXTOBJ := $(patsubst %.h,%.o,$(filter %.h,$(CXXTSRC)))
 
 .PHONY: clean sortaclean all tests
-all: TissueCells $(TESTOBJ:.o=.t) cxxtests
+all: TissueCells $(TESTOBJ:.o=.t) cxxtests sortaclean
 
 sortaclean:
-	rm $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) 
+	rm $(CXXTOBJ:.o=.cpp) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) 
 clean:
 	rm $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
 
