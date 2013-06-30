@@ -119,7 +119,7 @@ public:
 		u1 = TissueCell::Unit::Create_xya(3.5, 3.5, 0);
 		u2 = TissueCell::Unit::Create_xya(4.5, 3.5, pi);
 
-		//TissueCell::Interact(u1, u2, 4, 2, 10, 0, .8); //Repulsive force of .8 to push particles spaced at 1 by .4
+		TissueCell::Interact(u1, u2, 4, 2, 10, 0, .8); //Repulsive force of .8 to push particles spaced at 1 by .4
 
 		u1.TakeStep(1, 0, 1, 1, 0, 10, rng); //dt = 1, v = 0, noise=0
 		u2.TakeStep(1, 0, 1, 1, 0, 10, rng);
