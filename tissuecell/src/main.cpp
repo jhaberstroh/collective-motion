@@ -5,7 +5,7 @@
 #include <vector>
 
 
-int main(){
+int main(int argc, char ** argv){
 	TissueCell::Vector myvector(100);
 
 	MTRand rng;
@@ -16,5 +16,5 @@ int main(){
 		std::cout << "Random x position: " << cell.x << std::endl;
 	}
 
-	RenderFrame1Sec(std::vector<TissueCell::RealType>());
+	RenderFrame1Sec(argc, argv, std::vector<TissueCell::RealType>());
 }
