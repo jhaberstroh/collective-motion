@@ -9,7 +9,12 @@ REQUIREMENTS
 . MersenneTwister.h (mine is in /usr/local/include) from Makoto Matsumoto, historically hosted at http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
 . CxxTest library (mine is v4.0.3, from Ubuntu apt-get on 06/28/13)
 
+FOR QT:
+. Qt 5.1.0, with libraries in good places (added to /etc/ld.so.conf)
+	. icu suite (added to /etc/ld.so.conf), including [icui18n, icuuc, icudata]
+
 The Makefile assumes that -I & -L is not needed for the above libraries. Modify CPPFLAGS if you have local installations that are not in the compiler path.
+	(QT and icu paths are brutally added to the makefile, so it might be worth doing something better than this in the future.)
 
 INSTRUCTIONS
 ===================

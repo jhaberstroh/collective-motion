@@ -1,9 +1,9 @@
 # Based on Peter Miller's "Recursive Make Considered Harmful", 1997, AUUGN Journal of AUUG Inc., 19(1), pp. 14-25
 # >> NOTE: All c++ & CxxTest files must have .cpp & .h suffix!,
-#CPPFLAGS:=-I/home/jhaberstroh/Downloads/sourcebuilds/Qt/5.1.0/gcc_64/include -I/home/jhaberstroh/Downloads/sourcebuilds/icu/include
-#LIBDIR := $(patsubst -I%/include, -L%/lib, $(CPPFLAGS))
+CPPFLAGS:=-I/home/jhaberstroh/Downloads/sourcebuilds/Qt/5.1.0/gcc_64/include -I/home/jhaberstroh/Downloads/sourcebuilds/icu/include
+LIBDIR := $(patsubst -I%/include, -L%/lib, $(CPPFLAGS))
 
-MODULES:= src #name the subfolders to compile
+MODULES:= src qtgui #name the subfolders to compile
 CXXTEST:= cxxtest
 CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))
@@ -28,7 +28,7 @@ CXXTOBJ := $(patsubst %.h,%.o,$(filter %.h,$(CXXTSRC)))
 
 # C Compiler not passed to ./depend.sh
 CC=g++
-CPPFLAGS += --std=c++11 -g
+CPPFLAGS += --std=c++11 -g -fPIE
 
 
 .PHONY: clean sortaclean all tests
@@ -49,7 +49,6 @@ TissueCells: $(OBJ) $(MAINOBJ)
 # .t files are my convention for executables from CxxTest
 # Calls to this rule come from files supplied to CXXTSRC
 $(CXXTEST)/%.t: $(CXXTEST)/%.o $(OBJ)
-	export LD_LIBRARY_PATH; \
 	$(CC) -o $@ $^ $(LIBDIR) $(LIBS)
 
 $(CXXTEST)/%.o: $(CXXTEST)/%.h

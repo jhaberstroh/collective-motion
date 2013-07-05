@@ -2,7 +2,7 @@
 #define __TISSUECELLGUI_H_DEFINED__
 #include "tissuecell.h"
 
-void RenderFrame(std::vector<TissueCell::RealType> pos);
+void RenderFrame1Sec(std::vector<TissueCell::RealType> pos);
 
 
 
