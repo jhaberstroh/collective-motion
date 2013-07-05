@@ -1,25 +1,35 @@
 # Based on Peter Miller's "Recursive Make Considered Harmful", 1997, AUUGN Journal of AUUG Inc., 19(1), pp. 14-25
-MODULES:= src qtgui #name the subfolders to compile
+# >> NOTE: All c++ & CxxTest files must have .cpp & .h suffix!,
+#CPPFLAGS:=-I/home/jhaberstroh/Downloads/sourcebuilds/Qt/5.1.0/gcc_64/include -I/home/jhaberstroh/Downloads/sourcebuilds/icu/include
+#LIBDIR := $(patsubst -I%/include, -L%/lib, $(CPPFLAGS))
+
+MODULES:= src #name the subfolders to compile
 CXXTEST:= cxxtest
 CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))
-# C Compiler not passed to ./depend.sh
-CC=g++
-CPPFLAGS += --std=c++11 -g
 
 
 # Generate the source & required libraries in each $(module)/module.mk file through the include
 # There must be only one main
 MAIN :=
-LIBS :=
 SRC := 
+LIBS :=
+#######################
 include $(patsubst %,%/module.mk,$(MODULES))
+#######################
 OBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(SRC)))
 MAINOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(MAIN)))
+LIBS := $(patsubst %, -l%, $(LIBS))
 
 CXXTSRC :=
 include $(patsubst %,%/module.mk,$(CXXTEST))
 CXXTOBJ := $(patsubst %.h,%.o,$(filter %.h,$(CXXTSRC)))
+
+
+# C Compiler not passed to ./depend.sh
+CC=g++
+CPPFLAGS += --std=c++11 -g
+
 
 .PHONY: clean sortaclean all tests
 all: TissueCells $(TESTOBJ:.o=.t) cxxtests
@@ -34,12 +44,13 @@ cxxtests: $(CXXTOBJ:.o=.t)
 
 # .o dependencies will build automatically
 TissueCells: $(OBJ) $(MAINOBJ)
-	$(CC) -o $@ $^ $(LIBS)
+	$(CC) -o $@ $^ $(LIBDIR) $(LIBS)
 
-# .o dependencies build according to cxxtest rules.
-# Targets that match this rule will be only those specified in module.mk.
+# .t files are my convention for executables from CxxTest
+# Calls to this rule come from files supplied to CXXTSRC
 $(CXXTEST)/%.t: $(CXXTEST)/%.o $(OBJ)
-	$(CC) -o $@ $^ $(LIBS)
+	export LD_LIBRARY_PATH; \
+	$(CC) -o $@ $^ $(LIBDIR) $(LIBS)
 
 $(CXXTEST)/%.o: $(CXXTEST)/%.h
 	cd $(CXXTEST); \
