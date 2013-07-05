@@ -1,4 +1,5 @@
 #include "tissuecell.h"
+#include "tissuecellgui.h"
 #include "MersenneTwister.h"
 #include <algorithm>
 #include <vector>
@@ -14,4 +15,6 @@ int main(){
 	for (auto& cell : myvector){
 		std::cout << "Random x position: " << cell.x << std::endl;
 	}
+
+	RenderFrame1Sec(std::vector<TissueCell::RealType>())
 }

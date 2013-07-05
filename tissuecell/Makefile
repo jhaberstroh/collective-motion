@@ -1,5 +1,5 @@
 # Based on Peter Miller's "Recursive Make Considered Harmful", 1997, AUUGN Journal of AUUG Inc., 19(1), pp. 14-25
-MODULES:= src  #name the subfolders to compile
+MODULES:= src qtgui #name the subfolders to compile
 CXXTEST:= cxxtest
 CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))

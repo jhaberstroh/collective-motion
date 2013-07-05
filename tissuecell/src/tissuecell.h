@@ -52,22 +52,4 @@ namespace TissueCell{
 
 }
 
-
-
-class vector{
-
-
-}
-
-
-
-int main(){
-
-	std::vector<double> v1;
-
-	c1.jump(Fence(10));
-	c2.avoid(Bath(11));
-
-
-}
-#endif 
+#endif
