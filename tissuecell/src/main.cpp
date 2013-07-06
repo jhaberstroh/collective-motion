@@ -3,6 +3,7 @@
 #include "MersenneTwister.h"
 #include <algorithm>
 #include <vector>
+#include <QtGui/QGuiApplication>
 
 
 int main(int argc, char ** argv){
@@ -16,5 +17,6 @@ int main(int argc, char ** argv){
 		std::cout << "Random x position: " << cell.x << std::endl;
 	}
 
-	RenderFrame1Sec(argc, argv, std::vector<TissueCell::RealType>());
+	QGuiApplication app(argc, argv);
+	RenderFrame1Sec(std::vector<TissueCell::RealType>());
 }
