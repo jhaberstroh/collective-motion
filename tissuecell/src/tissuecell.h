@@ -28,15 +28,19 @@ namespace TissueCell{
 		RealType Fx;
 		RealType Fy;
 	
-		CellData(RealType mx, RealType my, RealType ma): x(mx), y(my), angle(ma), Fx(0), Fy(0) {};
-		CellData(): x(0), y(0), angle(0), Fx(0), Fy(0) {};
+		CellData(RealType mx, RealType my, RealType ma): angle(ma), x(mx), y(my), Fx(0), Fy(0) {};
+		CellData(): angle(0), x(0), y(0), Fx(0), Fy(0) {};
 
 		static CellData Create_xya(RealType mx, RealType my, RealType ma){
 			return CellData(mx,my,ma);}
 
+		static CellData Create_xy(RealType mx, RealType my){
+			return CellData(mx,my,0);}
+
 		static CellData CreateRandom(MTRand& rng){
 			return CellData(rng.rand(), rng.rand(), rng.rand());}
 
+		/// Positions are from [0, box_size), closed bottom & open top
 		void TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng);
 	};
 

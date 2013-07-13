@@ -19,6 +19,8 @@ namespace TissueCell{
 
 	class SimSystem{
 	private:
+		typedef uint uint32;
+
 		/// Movement parameters
 		RealType dt;
 		RealType v0;
@@ -33,10 +35,15 @@ namespace TissueCell{
 		RealType Req;
 		RealType Rcut;
 
-	public:
-		void PrintParams();
+		RealType m_total_time;
+		Vector system;
+		MTRand rng;
 
-		SimSystem():dt(__MC_dt_DFT),
+	public:
+		//RealType box_size(){ return box_size;}
+
+
+		SimSystem(bool print_out=false):dt(__MC_dt_DFT),
 						 v0(__MC_v0_DFT),
 						 mob(__MC_mob_DFT),
 						 t_relax(__MC_t_relax_DFT),
@@ -46,21 +53,30 @@ namespace TissueCell{
 						 Frep(__MC_Frep_DFT),
 						 Req(__MC_Req_DFT),
 						 Rcut(__MC_Rcut_DFT){
-			PrintParams();
+			m_total_time = 0;
+			if (print_out){
+				PrintParams();
+			}
 		}	
-		
-		using namespace std
-		void myfun(){
-			vector x
 
-			x.append(thing)
-
+		void SetRNGSeed(int seed){
+			rng = MTRand(seed);
 		}
-			std::vector
-			TissueCell::vector
-	}
 
+		void PrintParams();
+		
+		void TimeStep();
 
+		/// Scale all of the translational 
+		void LinearZoom(double zoom_factor);
+
+		// All angles are aligned
+		void GenerateCubicLattice(unsigned int n_length);
+		
+		const Vector& ViewSystem(){
+			return system;
+		}
+	};
 }
 
 

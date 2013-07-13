@@ -47,6 +47,7 @@
 #include "rasterwindow.h"
 #include "MersenneTwister.h"
 #include "tissuecell.h"
+#include "simsystem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Simulation object, to run in a thread
@@ -56,13 +57,13 @@ class Sim : public QObject
 Q_OBJECT
 			QThread workerThread;
 			MTRand rng;
-			TissueCell::Vector sim;
+			TissueCell::SimSystem sim;
 
 	public:
 			Sim(){
-				for (int i = 0 ; i < 5 ; ++i){
-					sim.push_back(TissueCell::CellData::Create_xya(178*rng.rand() + 10, 178*rng.rand() + 10, 3.1415926535 * 2 * rng.rand()));
-				}
+				//sim.LinearZoom(20);
+				sim.GenerateCubicLattice(3);
+				
 			}
 	public slots:
 			void doWork(const QString &parameter);
@@ -88,7 +89,7 @@ Q_OBJECT
 public:
 	SimTemplate():RasterWindow()
 	{
-    setTitle("Analog Clock");
+    setTitle("Cell Tissue Simulation");
     resize(200, 200);
 
 		result_ready = false;

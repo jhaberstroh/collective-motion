@@ -1,9 +1,11 @@
 #include <cxxtest/TestSuite.h>
 #include <cmath>
 #include "tissuecell.h"
+#include "simsystem.h"
 #include "MersenneTwister.h"
 
 class TissueCellSuite : public CxxTest::TestSuite {
+	typedef uint uint32;
 private:
 		MTRand rng;
 		TissueCell::RealType pi;
@@ -146,5 +148,58 @@ public:
 		TS_ASSERT_DELTA(u2.x, 4.5, err);
 		TS_ASSERT_DELTA(u2.y, 3.5, err);
 	}
+
+
+	void testGenerateLattice(void){
+		TissueCell::SimSystem simulation;
+
+		simulation.GenerateCubicLattice(1);
+
+		const TissueCell::Vector& data = simulation.ViewSystem();
+		for (uint i = 0 ; i < data.size() ; i++){
+			TS_ASSERT_DELTA(data[i].x, 0, err);
+			TS_ASSERT_DELTA(data[i].y, 0, err);
+		}
+		
+	}
+
+	void testFiveTimeSteps(void){
+		TissueCell::SimSystem simulation;
+
+		simulation.GenerateCubicLattice(3);
+		
+		TissueCell::Vector data_start(simulation.ViewSystem());
+
+		for (int i = 0 ; i < 10 ; i++){
+			simulation.TimeStep();
+		}
+			
+		TissueCell::Vector data_end(simulation.ViewSystem());
+	
+		for (uint i = 0 ; i < data_start.size() ; i++){
+			TS_ASSERT_DIFFERS(data_start[i].x, data_end[i].x);
+			TS_ASSERT_DIFFERS(data_start[i].y, data_end[i].y);
+		}
+	}
+
+	void testTenTimeSteps(void){
+		TissueCell::SimSystem simulation;
+
+		simulation.GenerateCubicLattice(3);
+		
+		TissueCell::Vector data_start(simulation.ViewSystem());
+
+		for (int i = 0 ; i < 10 ; i++){
+			simulation.TimeStep();
+		}
+			
+		TissueCell::Vector data_end(simulation.ViewSystem());
+	
+		for (uint i = 0 ; i < data_start.size() ; i++){
+			TS_ASSERT_DIFFERS(data_start[i].x, data_end[i].x);
+			TS_ASSERT_DIFFERS(data_start[i].y, data_end[i].y);
+		}
+	}
+
 
 };

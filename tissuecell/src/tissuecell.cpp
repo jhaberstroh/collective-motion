@@ -17,11 +17,11 @@ namespace TissueCell{
 		if (t_relax < 0){ throw std::invalid_argument("t_relax < 0"); }
 		if (noise < 0){ throw std::invalid_argument("noise < 0"); }
 
-		RealType ffffx = this->Fx;
-		RealType ffffy = this->Fy;
-		RealType xxxxx = this->x;
-		RealType yyyyy = this->y;
-		RealType aaaangle = this->angle;
+		//RealType ffffx = this->Fx;
+		//RealType ffffy = this->Fy;
+		//RealType xxxxx = this->x;
+		//RealType yyyyy = this->y;
+		//RealType aaaangle = this->angle;
 		
 
 		RealType dxF = (mob * Fx) * dt;
@@ -75,8 +75,6 @@ namespace TissueCell{
 		if (Fadh < 0){ throw std::invalid_argument("Fadh < 0"); }
 		if (Frep < 0){ throw std::invalid_argument("Frep < 0"); }
 
-		RealType fx;
-		RealType fy;
 	
 		// Vector points from cell1 to cell2
 		RealType dx = cell2.x - cell1.x;

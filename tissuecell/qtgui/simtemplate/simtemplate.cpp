@@ -3,12 +3,15 @@
 
 void Sim::doWork(const QString &parameter) {
 		qDebug() << "Pre-send: ";
+		for (int i = 0 ; i < 5; i++){
+			sim.TimeStep();
+		}
 		formatAndEmit();
 }
 
 void Sim::formatAndEmit() {
 		QList<double> dat_out;
-		for (auto cell : sim){
+		for (auto cell : sim.ViewSystem()){
 			dat_out.append(cell.x);
 			dat_out.append(cell.y);
 		}
@@ -18,10 +21,12 @@ void Sim::formatAndEmit() {
 
 void SimTemplate::timerEvent(QTimerEvent *event)
 {
-	if (event->timerId() == m_timerId)
+	if (event->timerId() == m_timerId){
 		qDebug() << "Operate emitted.";
 		emit operate("");
+	}
 }
+
 
 
 void SimTemplate::renderDataLater(const QList<double>& data)
