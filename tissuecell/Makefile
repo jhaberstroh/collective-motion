@@ -36,9 +36,9 @@ CC=g++
 CPPFLAGS += --std=c++11 -g -fPIE -Wall
 
 
-.PHONY: all sortaclean clean cxxtests GUI
+.PHONY: all sortaclean clean cxxtests GUI GUIclean
 
-all: TissueCells $(TESTOBJ:.o=.t) cxxtests GUI
+all: TissueCells $(TESTOBJ:.o=.t) cxxtests
 
 sortaclean:
 	rm $(CXXTOBJ:.o=.cpp) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d)
@@ -51,12 +51,11 @@ cxxtests: $(CXXTOBJ:.o=.t)
 # Must come last in the all command.
 # Builds the GUI using qmake, because linking to QT libraries is painful.
 # module.pri files can be added by .pro files to allow the modules to be included correctly in qmake.
-GUI: $(patsubst %, %/module.pri, $(MODULES))
-	cd $(GUIMODULE); \
-	cd simtemplate; \
-	qmake; \
-	make
+gui: $(patsubst %, %/module.pri, $(MODULES))
+	cd $(GUIMODULE); cd simtemplate; qmake;	make; cp simtemplate ../../guiTissueCell
 	
+guiclean: 
+	cd $(GUIMODULE); cd simtemplate; make clean;
 
 # .o dependencies will build automatically
 TissueCells: $(OBJ) $(MAINOBJ)
