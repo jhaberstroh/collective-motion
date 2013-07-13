@@ -1,0 +1,14 @@
+QtSimTemplate
+=====================================
+A template designed to make it very easy to render a simulation in real time using Qt.
+
+Qt demands that it be run as the primary environment, making it sometimes complicated to let it interface with previously written simulation code. This template sets up a simulation object as a separate thread that can emit a relatively thread-safe render call.
+
+This code is based on the AnalogWindow and RasterWindow classes from the Qt5 example code.
+
+
+Usage
+=====================================
+Qt should be called with qmake. Check to make sure that your qmake calls Qt5's qmake on your system.
+
+

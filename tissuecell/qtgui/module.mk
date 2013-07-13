@@ -1,2 +1,6 @@
-SRC += qtgui/tissuecellgui.cpp
-LIBS += Qt5Gui Qt5Core Qt5Widgets icui18n icuuc icudata
+.PHONY += GUI
+
+GUI: $(patsubst %, %/module.mk, $(MODULES))
+
+%/module.qt: %/module.mk
+	./genqt_include.sh $^

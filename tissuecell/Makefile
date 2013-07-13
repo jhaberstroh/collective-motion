@@ -1,9 +1,12 @@
 # Based on Peter Miller's "Recursive Make Considered Harmful", 1997, AUUGN Journal of AUUG Inc., 19(1), pp. 14-25
 # >> NOTE: All c++ & CxxTest files must have .cpp & .h suffix!,
+PWD:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
 CPPFLAGS:=-I/home/jhaberstroh/Downloads/sourcebuilds/Qt/5.1.0/gcc_64/include -I/home/jhaberstroh/Downloads/sourcebuilds/icu/include
 LIBDIR := $(patsubst -I%/include, -L%/lib, $(CPPFLAGS))
 
-MODULES:= src qtgui #name the subfolders to compile
+MODULES:= src
+GUIMODULE := qtgui #name the subfolders to compile
 CXXTEST:= cxxtest
 CPPFLAGS += $(patsubst %,-I%,$(MODULES))
 CPPFLAGS += $(patsubst %,-I%,$(TESTING))
@@ -13,9 +16,11 @@ CPPFLAGS += $(patsubst %,-I%,$(TESTING))
 # There must be only one main
 MAIN :=
 SRC := 
+HEADERS :=
 LIBS :=
 #######################
 include $(patsubst %,%/module.mk,$(MODULES))
+include $(patsubst %,%/module.mk,$(GUIMODULES))
 #######################
 OBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(SRC)))
 MAINOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(MAIN)))
