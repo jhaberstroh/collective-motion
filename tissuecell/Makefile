@@ -20,7 +20,7 @@ HEADERS :=
 LIBS :=
 #######################
 include $(patsubst %,%/module.mk,$(MODULES))
-include $(patsubst %,%/module.mk,$(GUIMODULES))
+include $(patsubst %,%/module.mk,$(GUIMODULE))
 #######################
 OBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(SRC)))
 MAINOBJ := $(patsubst %.cpp,%.o,$(filter %.cpp,$(MAIN)))
@@ -36,8 +36,9 @@ CC=g++
 CPPFLAGS += --std=c++11 -g -fPIE
 
 
-.PHONY: clean sortaclean all tests
-all: TissueCells $(TESTOBJ:.o=.t) cxxtests
+.PHONY: all sortaclean clean cxxtests GUI
+
+all: TissueCells $(TESTOBJ:.o=.t) cxxtests GUI
 
 sortaclean:
 	rm $(CXXTOBJ:.o=.cpp) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d)
@@ -46,6 +47,16 @@ clean:
 	rm $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
 
 cxxtests: $(CXXTOBJ:.o=.t)
+
+# Must come last in the all command.
+# Builds the GUI using qmake, because linking to QT libraries is painful.
+# module.pri files can be added by .pro files to allow the modules to be included correctly in qmake.
+GUI: $(patsubst %, %/module.pri, $(MODULES))
+	cd $(GUIMODULE); \
+	cd simtemplate; \
+	qmake; \
+	make
+	
 
 # .o dependencies will build automatically
 TissueCells: $(OBJ) $(MAINOBJ)
