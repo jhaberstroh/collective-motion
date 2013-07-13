@@ -1,4 +1,4 @@
 .PHONY += GUI
 
-%/module.pri: %/module.mk
+%/module.pri: qtgui/genqt_include.sh %/module.mk
 	qtgui/genqt_include.sh $^

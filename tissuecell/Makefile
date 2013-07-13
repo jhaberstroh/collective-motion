@@ -33,7 +33,7 @@ CXXTOBJ := $(patsubst %.h,%.o,$(filter %.h,$(CXXTSRC)))
 
 # C Compiler not passed to ./depend.sh
 CC=g++
-CPPFLAGS += --std=c++11 -g -fPIE
+CPPFLAGS += --std=c++11 -g -fPIE -Wall
 
 
 .PHONY: all sortaclean clean cxxtests GUI
@@ -44,7 +44,7 @@ sortaclean:
 	rm $(CXXTOBJ:.o=.cpp) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d)
 
 clean:
-	rm $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells
+	rm $(CXXTOBJ:.o=.cpp) $(CXXTOBJ:.o=.t) $(MAINOBJ) $(OBJ) $(OBJ:.o=.d) TissueCells $(patsubst %,%/module.pri,$(MODULES))
 
 cxxtests: $(CXXTOBJ:.o=.t)
 
