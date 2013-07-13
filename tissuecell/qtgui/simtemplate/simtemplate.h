@@ -56,11 +56,20 @@ class Sim : public QObject
 Q_OBJECT
 			QThread workerThread;
 			MTRand rng;
+			TissueCell::Vector sim;
 
-			public slots:
-				    void doWork(const QString &parameter);
-			 signals:
-		         void resultReady(const QList<double>& result);
+	public:
+			Sim(){
+				for (int i = 0 ; i < 5 ; ++i){
+					sim.push_back(TissueCell::CellData::Create_xya(178*rng.rand() + 10, 178*rng.rand() + 10, 3.1415926535 * 2 * rng.rand()));
+				}
+			}
+	public slots:
+			void doWork(const QString &parameter);
+ 	signals:
+			void resultReady(const QList<double>& result);
+	protected:
+			void formatAndEmit();
 };
 
 

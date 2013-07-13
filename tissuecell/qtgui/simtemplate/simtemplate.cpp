@@ -1,6 +1,21 @@
 #include "simtemplate.h"
 #include <iostream>
 
+void Sim::doWork(const QString &parameter) {
+		qDebug() << "Pre-send: ";
+		formatAndEmit();
+}
+
+void Sim::formatAndEmit() {
+		QList<double> dat_out;
+		for (auto cell : sim){
+			dat_out.append(cell.x);
+			dat_out.append(cell.y);
+		}
+
+		emit resultReady(dat_out);
+}
+
 void SimTemplate::timerEvent(QTimerEvent *event)
 {
 	if (event->timerId() == m_timerId)
@@ -22,14 +37,6 @@ void SimTemplate::renderDataLater(const QList<double>& data)
 }
 
 
-void Sim::doWork(const QString &parameter) {
-		QList<double> x;
-		for (int i = 0 ; i < 11 ; ++i){
-			x.append(178. * rng.rand() + 10);
-		}
-		qDebug() << "Pre-send: " << x[0];
-		emit resultReady(x);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // render
