@@ -163,41 +163,26 @@ public:
 		
 	}
 
-	void testFiveTimeSteps(void){
+
+	void testTwoStepNoForce(void){
 		TissueCell::SimSystem simulation;
+		simulation.SetFadh(0);
+		simulation.SetFrep(0);
 
 		simulation.GenerateCubicLattice(3);
 		
 		TissueCell::Vector data_start(simulation.ViewSystem());
 
-		for (int i = 0 ; i < 10 ; i++){
+		for (int i = 0 ; i < 2 ; i++){
 			simulation.TimeStep();
 		}
 			
 		TissueCell::Vector data_end(simulation.ViewSystem());
 	
 		for (uint i = 0 ; i < data_start.size() ; i++){
-			TS_ASSERT_DIFFERS(data_start[i].x, data_end[i].x);
-			TS_ASSERT_DIFFERS(data_start[i].y, data_end[i].y);
-		}
-	}
-
-	void testTenTimeSteps(void){
-		TissueCell::SimSystem simulation;
-
-		simulation.GenerateCubicLattice(3);
-		
-		TissueCell::Vector data_start(simulation.ViewSystem());
-
-		for (int i = 0 ; i < 10 ; i++){
-			simulation.TimeStep();
-		}
-			
-		TissueCell::Vector data_end(simulation.ViewSystem());
-	
-		for (uint i = 0 ; i < data_start.size() ; i++){
-			TS_ASSERT_DIFFERS(data_start[i].x, data_end[i].x);
-			TS_ASSERT_DIFFERS(data_start[i].y, data_end[i].y);
+			if (data_start[i].x == data_end[i].x && data_start[i].y == data_end[i].y){
+				TS_FAIL("One of the particles did not move");
+			}
 		}
 	}
 

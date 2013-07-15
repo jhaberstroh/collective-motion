@@ -63,6 +63,10 @@ namespace TissueCell{
 			rng = MTRand(seed);
 		}
 
+		void SetFadh(RealType n_Fadh){ Fadh = n_Fadh;}
+		
+		void SetFrep(int n_Frep){ Frep = n_Frep;}
+
 		void PrintParams();
 		
 		void TimeStep();

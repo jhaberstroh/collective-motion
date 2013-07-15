@@ -119,6 +119,12 @@ namespace TissueCell{
 		cell1.Fy -= dy * Fmag;
 		return Fmag;
 	}
+
+	void CellData::print(){
+		std::cout << "Pos, angle: (" << x <<", "<< y <<"), "<< angle << std::endl;
+		std::cout << "Force: (" << Fx <<", "<< Fy <<")"<<std::endl;
+
+	}
 }
 
 

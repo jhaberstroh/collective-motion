@@ -42,6 +42,8 @@ namespace TissueCell{
 
 		/// Positions are from [0, box_size), closed bottom & open top
 		void TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng);
+
+		void print();
 	};
 
 	typedef CellData Unit;

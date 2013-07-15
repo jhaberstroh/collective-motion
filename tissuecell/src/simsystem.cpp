@@ -15,7 +15,6 @@ void TissueCell::SimSystem::PrintParams(){
 }
 
 void TissueCell::SimSystem::LinearZoom(double zoom_factor){
-	
 	v0 *= zoom_factor;
 	mob *= zoom_factor;
 	box_size *= zoom_factor;
