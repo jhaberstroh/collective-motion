@@ -10,8 +10,9 @@
 
 
 namespace TissueCell{
-	void CellData::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng)
+	int CellData::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq)
 	{
+		int rtn = 0;
 		// Handle invalid arguments
 		if (mob < 0){ throw std::invalid_argument("mob < 0"); }
 		if (t_relax < 0){ throw std::invalid_argument("t_relax < 0"); }
@@ -44,15 +45,29 @@ namespace TissueCell{
 
 		// Map x and y [0, box_size) periodically
 		// e.g. box_size = 10.0, sends 10.0 -> 0.0
-		if (this->x >= box_size){ this->x -= box_size ;} 		
-		if (this->y >= box_size){ this->y -= box_size; } 
-		// e.g. box_size = 10.0, then -10.0 -> ceil(1) -> 0 and  -10.1 -> ceil(1.01) -> 9.99
-		if (this->x < 0){ this->x += box_size; }  
-		if (this->y < 0){ this->y += box_size; }
+		// For a non-equilibration step:
+		if (!eq){
+			if (this->x >= box_size){ this->x -= box_size ;} 		
+			if (this->y >= box_size){ this->y -= box_size; } 
+			// e.g. box_size = 10.0, then -10.0 -> ceil(1) -> 0 and  -10.1 -> ceil(1.01) -> 9.99
+			if (this->x < 0){ this->x += box_size; }  
+			if (this->y < 0){ this->y += box_size; }
+		}
+
+		// For an equilibration step:
+		if (eq){
+			RealType beforex = this->x;
+			RealType beforey = this->y;
+			this->x = fmod(fmod(this->x, box_size) + box_size, box_size);
+			this->y = fmod(fmod(this->y, box_size) + box_size, box_size);
+
+			if (beforex != this->x or beforey != this->y){
+				rtn = 1;
+			}
+		}
 
 		RealType twoPi = 2.0 * 3.141592865358979;
-    this->angle -= twoPi * floor( angle / twoPi );	
-
+    this->angle = fmod(fmod(this->angle, twoPi) + twoPi, twoPi);
 		// Assertions to match the above definitions
 		// Furthermore: Do not allow a particle to step more than a box width.
 		//  (angle can rotate artibrarily)
@@ -66,6 +81,8 @@ namespace TissueCell{
 		// Clear the old forces;
 		this->Fx = 0;
 		this->Fy = 0;
+		
+		return rtn;
 	}
 
 

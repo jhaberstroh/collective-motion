@@ -62,20 +62,25 @@ namespace TissueCell{
 		void SetRNGSeed(int seed){
 			rng = MTRand(seed);
 		}
-
 		void SetFadh(RealType n_Fadh){ Fadh = n_Fadh;}
-		
 		void SetFrep(int n_Frep){ Frep = n_Frep;}
 
 		void PrintParams();
 		
 		void TimeStep();
+		int EqStep();
+		int Equilibrate(int n_equil);
+
 
 		/// Scale all of the translational 
 		void LinearZoom(double zoom_factor);
 
+		void RandomizeAngles();
 		// All angles are aligned
-		void GenerateCubicLattice(unsigned int n_length);
+		void GenerateCubicLattice(unsigned int n_in_length);
+		void GenerateNRandom(unsigned int N);
+		void GenerateNPile(uint N, RealType x, RealType y);
+		
 		
 		const Vector& ViewSystem(){
 			return system;

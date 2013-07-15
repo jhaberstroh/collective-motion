@@ -187,4 +187,39 @@ public:
 	}
 
 
+	void testFailure(void){
+		TissueCell::SimSystem simulation;
+
+		simulation.GenerateNRandom(10000);
+		
+		int fail = simulation.EqStep();
+			
+		TS_ASSERT_EQUALS(fail,1);
+	}
+
+	void testPile(void){
+		TissueCell::SimSystem simulation;
+		simulation.SetFadh(0);
+		simulation.SetFrep(0);
+
+		simulation.GenerateNPile(10000, 5, 5);
+		simulation.RandomizeAngles();
+		
+		simulation.TimeStep();
+
+		double xmean = 0;
+		double ymean = 0;
+		TissueCell::Vector data(simulation.ViewSystem());
+		for (auto& cell : data){
+			xmean += cell.x;
+			ymean += cell.y;
+		}
+
+		xmean /= data.size();
+		ymean /= data.size();
+
+		TS_ASSERT_DELTA(xmean, 5, .001);
+		TS_ASSERT_DELTA(ymean, 5, .001);
+	}
+
 };

@@ -38,10 +38,16 @@ namespace TissueCell{
 			return CellData(mx,my,0);}
 
 		static CellData CreateRandom(MTRand& rng){
-			return CellData(rng.rand(), rng.rand(), rng.rand());}
+			return CellData(rng.rand(), rng.rand(), rng.rand() * 2 * 3.14159265359);}
+		static CellData CreateRandom(MTRand& rng, RealType box_size){
+			return CellData(rng.rand() * box_size, rng.rand() * box_size, rng.rand() * 2 * 3.14159265359);}
+
 
 		/// Positions are from [0, box_size), closed bottom & open top
-		void TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng);
+		/// Returns non-zero to specify non-equilibrated (i.e. exploding)
+		int TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq=false);
+		
+		void RandomizeAngle(MTRand& rng){ angle = rng.rand() * 2 * 3.14159265359;}
 
 		void print();
 	};
