@@ -61,9 +61,8 @@ Q_OBJECT
 
 	public:
 			Sim(){
-				//sim.LinearZoom(20);
+				sim.LinearZoom(20);
 				sim.GenerateCubicLattice(3);
-				
 			}
 	public slots:
 			void doWork(const QString &parameter);
@@ -101,7 +100,7 @@ public:
 		connect(sim, &Sim::resultReady, this, &SimTemplate::renderDataLater);
 		simThread.start();
 
-		m_timerId = startTimer(1000);
+		m_timerId = startTimer(100);
 	}
 	
 	~SimTemplate()

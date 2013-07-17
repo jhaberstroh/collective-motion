@@ -3,7 +3,7 @@
 
 void Sim::doWork(const QString &parameter) {
 		qDebug() << "Pre-send: ";
-		for (int i = 0 ; i < 5; i++){
+		for (int i = 0 ; i < 1; i++){
 			sim.TimeStep();
 		}
 		formatAndEmit();
@@ -14,6 +14,7 @@ void Sim::formatAndEmit() {
 		for (auto cell : sim.ViewSystem()){
 			dat_out.append(cell.x);
 			dat_out.append(cell.y);
+			dat_out.append(cell.angle);
 		}
 
 		emit resultReady(dat_out);
@@ -105,6 +106,15 @@ void SimTemplate::render(QPainter *p)
 		*/
 
 	if (result_ready){
+    static const QPoint walker[3] = {
+        QPoint(5, -5),
+        QPoint(-5, -5),
+        QPoint(0, 10)
+    };
+    QColor walkerColor(127, 0, 127);
+
+    p->setRenderHint(QPainter::Antialiasing);
+
 		QBrush brsh(Qt::SolidPattern);
 		QPen pen(brsh, 2, Qt::SolidLine);
 
@@ -115,7 +125,11 @@ void SimTemplate::render(QPainter *p)
 		p->setBrush(brsh);
 
 		for (int i = 0 ; i < result.size() / 2 ; i++){
-			p->drawEllipse(result[2*i], result[2*i+1], 1, 1);
+			p->save();
+    	p->translate(result[3*i], result[3*i+1]);
+    	p->rotate(result[3*i+2] * 180./3.14159265359 - 90);
+    	p->drawConvexPolygon(walker, 3);
+			p->restore();
 		}
 		qDebug() << "Post-send: "	<< result[0];
 	}
