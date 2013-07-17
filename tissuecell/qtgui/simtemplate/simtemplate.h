@@ -60,14 +60,21 @@ Q_OBJECT
 			TissueCell::SimSystem sim;
 
 	public:
-			Sim(){
-				int seed = rng.rand(10000000);
-				qDebug() << "SEED: "<<seed;
+			Sim(int seed_in = -1){
+				int seed;
+				if (seed_in == -1){
+					seed = rng.rand(10000000);
+					qDebug() << "SEED: "<<seed;
+				}
+				else{
+					seed = seed_in; 
+					qDebug() << "SEED-IN: "<<seed;
+				}
 				sim.SetRNGSeed(seed);
 				sim.LinearZoom(20);
 				sim.GenerateCubicLattice(3);
 				sim.RandomizeAngles();
-				sim.Setdt(.1);
+				sim.Setdt(.01);
 			}
 	public slots:
 			void doWork(const QString &parameter);
@@ -91,14 +98,14 @@ Q_OBJECT
 			int m_timerId;
 
 public:
-	SimTemplate():RasterWindow()
+	SimTemplate(int seed_in):RasterWindow()
 	{
     setTitle("Cell Tissue Simulation");
     resize(200, 200);
 
 		result_ready = false;
 
-		Sim *sim = new Sim;
+		Sim *sim = new Sim(seed_in);
 		sim->moveToThread(&simThread);
 		connect(&simThread, &QThread::finished, sim, &QObject::deleteLater);
 		connect(this, &SimTemplate::operate, sim, &Sim::doWork);

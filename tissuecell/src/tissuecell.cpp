@@ -28,8 +28,11 @@ namespace TissueCell{
 		RealType dxF = (mob * Fx) * dt;
 		RealType dxV = (std::cos(this->angle) * v0) * dt;
 		RealType dx = dxF + dxV;
-		RealType dy = ((std::sin(this->angle) * v0) + (mob * Fy)) * dt;
-	
+		RealType dyF = (mob * Fy) * dt;
+		RealType dyV = (std::sin(this->angle) * v0) * dt;
+		RealType dy = dyF + dyV;
+
+
 		RealType vmag = sqrt(dx * dx + dy * dy); 
 
 		// arcsin of a cross product of two normalized vecors will give the deflection in theta.
@@ -38,6 +41,11 @@ namespace TissueCell{
 			this->angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag);
 		}
 		this->angle += step_noise;
+#ifndef FORCE_WARN_OFF
+			if (vmag > 10){
+					std::cout << "WARNING: Assuming Req of 1: Single step is on the order of Req. Check your timestep and interaction parameters." << std::endl;
+			}
+#endif
 		this->x += dx;
 		this->y += dy;
 
@@ -110,7 +118,7 @@ namespace TissueCell{
 		assert(dy <= box_size / 2.0);
 		assert(dy > -box_size / 2.0);
 
-		RealType Fmag;
+		RealType Fmag = 0;
 		RealType dist = sqrt(dx*dx + dy*dy);
 		if (dist == 0){ 
 			if (Frep != 0){
@@ -139,11 +147,26 @@ namespace TissueCell{
 	
 	
 			// Normalized dist vector points from cell1 to cell 2;
+			
+#ifndef FORCE_WARN_OFF
+			if (Fmag > Req){
+				if (dist > Req){
+					std::cout << "WARNING: Assuming mobiliity of 1: Single attractive force is on the order of Req. Check your timestep and interaction parameters.";
+				}
+				if (dist < Req){
+					std::cout << "WARNING: Assuming mobiliity of 1: Single repulsive force is on the order of Req. Check your timestep and interaction parameters.";
+				}
+			}
+#endif
+
 			cell2.Fx += dx * Fmag;
 			cell2.Fy += dy * Fmag;
 	
 			cell1.Fx -= dx * Fmag;
 			cell1.Fy -= dy * Fmag;
+
+			
+
 			return Fmag;
 		}
 	}

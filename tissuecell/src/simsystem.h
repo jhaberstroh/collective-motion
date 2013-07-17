@@ -3,14 +3,14 @@
 
 #include "tissuecell.h"
 
-#define __MC_dt_DFT 1
+#define __MC_dt_DFT .01
 #define __MC_v0_DFT 1
 #define __MC_mob_DFT 1
 #define __MC_t_relax_DFT 1
 #define __MC_noise_DFT 0
 #define __MC_box_size_DFT 10
 #define __MC_Fadh_DFT .75
-#define __MC_Frep_DFT 30
+#define __MC_Frep_DFT 3
 #define __MC_Req_DFT 1
 #define __MC_Rcut_DFT 2
 
@@ -38,6 +38,7 @@ namespace TissueCell{
 		RealType m_total_time;
 		Vector system;
 		MTRand rng;
+		RealType zoom;
 
 	public:
 		//RealType box_size(){ return box_size;}
@@ -52,7 +53,8 @@ namespace TissueCell{
 						 Fadh(__MC_Fadh_DFT),
 						 Frep(__MC_Frep_DFT),
 						 Req(__MC_Req_DFT),
-						 Rcut(__MC_Rcut_DFT){
+						 Rcut(__MC_Rcut_DFT),
+						 zoom(1){
 			m_total_time = 0;
 			if (print_out){
 				PrintParams();
@@ -74,6 +76,7 @@ namespace TissueCell{
 
 
 		/// Scale all of the translational 
+		RealType get_zoom(){ return zoom; }
 		void LinearZoom(double zoom_factor);
 
 		void RandomizeAngles();

@@ -20,6 +20,12 @@ void TissueCell::SimSystem::LinearZoom(double zoom_factor){
 	box_size *= zoom_factor;
 	Req *= zoom_factor;
 	Rcut *= zoom_factor;
+	zoom *= zoom_factor;
+	for (auto& cell : system){
+		cell.x *= zoom_factor;
+		cell.y *= zoom_factor;
+		// Forces are not scaled because all distance parameter scaling cancels; mobility handles the length scaling
+	}
 }
 
 void TissueCell::SimSystem::RandomizeAngles(){
