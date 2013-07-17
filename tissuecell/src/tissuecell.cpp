@@ -35,17 +35,38 @@ namespace TissueCell{
 
 		RealType vmag = sqrt(dx * dx + dy * dy); 
 
+		RealType dtheta = 0;
 		// arcsin of a cross product of two normalized vecors will give the deflection in theta.
 		RealType step_noise = rng.rand() * noise;
 		if (vmag != 0){
-			this->angle += (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag);
+			try{
+				dtheta = (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag);
+				if (isnan(dtheta)){
+					throw (std::cos(angle) * dy - std::sin(angle) * dx) / vmag;
+				}
+			}
+			catch(RealType arcarg){
+				std::cout << "Caught bad arctan." <<std::endl;
+				if (arcarg >= 1 && arcarg <= 1.00001){
+					dtheta = (dt / t_relax) * 3.141592865358979 / 2.0;
+				}
+				else if (arcarg <=-1 && arcarg >=-1.00001){
+					dtheta = - (dt / t_relax) * 3.141592865358979 / 2.0;
+				}
+				else{
+					throw std::domain_error("Arctangent argument outside of allowed extended domain from floating point arithmetic");
+				}
+			}
+
 		}
 		this->angle += step_noise;
+
 #ifndef FORCE_WARN_OFF
-			if (vmag > 10){
-					std::cout << "WARNING: Assuming Req of 1: Single step is on the order of Req. Check your timestep and interaction parameters." << std::endl;
-			}
+		if (vmag > 10){
+			std::cout << "WARNING: Assuming Req of 1: Single step is on the order of Req. Check your timestep and interaction parameters." << std::endl;
+		}
 #endif
+
 		this->x += dx;
 		this->y += dy;
 
@@ -75,7 +96,14 @@ namespace TissueCell{
 		}
 
 		RealType twoPi = 2.0 * 3.141592865358979;
-    this->angle = fmod(fmod(this->angle, twoPi) + twoPi, twoPi);
+		if (!(this->angle + dtheta >= 0)){
+			this->angle += twoPi;
+		}
+		if (!(this->angle + dtheta < twoPi)){
+			this->angle -= twoPi;
+		}
+
+		this->angle += dtheta;
 		// Assertions to match the above definitions
 		// Furthermore: Do not allow a particle to step more than a box width.
 		//  (angle can rotate artibrarily)
@@ -84,8 +112,14 @@ namespace TissueCell{
 		assert(this->x >= 0);
 		assert(this->y < box_size);
 		assert(this->y >= 0);
-		assert(this-> angle < twoPi);
-		assert(this->angle >= 0);
+		if (!(this-> angle < twoPi)){
+			std::cout << "Current angle is " << this->angle << " which is apparently larger than or equal to " << twoPi << std::endl;
+			assert(this-> angle < twoPi);
+		}
+		if (!(this-> angle >= 0)){
+			std::cout << "Current angle is " << this->angle << " which is apparently smaller than 0." << std::endl;
+			assert(this->angle >= 0);
+		}
 
 		// Clear the old forces;
 		this->Fx = 0;

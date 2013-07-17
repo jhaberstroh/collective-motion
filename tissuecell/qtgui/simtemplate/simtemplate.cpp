@@ -3,7 +3,7 @@
 
 void Sim::doWork(const QString &parameter) {
 		//qDebug() << "Pre-send: ";
-		for (int i = 0 ; i < 5; i++){
+		for (int i = 0 ; i < 25; i++){
 			sim.TimeStep();
 		}
 		formatAndEmit();
