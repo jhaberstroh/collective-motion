@@ -72,7 +72,8 @@ Q_OBJECT
 				}
 				sim.SetRNGSeed(seed);
 				sim.LinearZoom(20);
-				sim.GenerateCubicLattice(3);
+				sim.SetFrep(12);
+				sim.GenerateCubicLattice(10);
 				sim.RandomizeAngles();
 				sim.Setdt(.01);
 			}
