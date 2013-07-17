@@ -2,8 +2,8 @@
 #include <iostream>
 
 void Sim::doWork(const QString &parameter) {
-		qDebug() << "Pre-send: ";
-		for (int i = 0 ; i < 1; i++){
+		//qDebug() << "Pre-send: ";
+		for (int i = 0 ; i < 5; i++){
 			sim.TimeStep();
 		}
 		formatAndEmit();
@@ -23,7 +23,7 @@ void Sim::formatAndEmit() {
 void SimTemplate::timerEvent(QTimerEvent *event)
 {
 	if (event->timerId() == m_timerId){
-		qDebug() << "Operate emitted.";
+		//qDebug() << "Operate emitted.";
 		emit operate("");
 	}
 }
@@ -32,9 +32,9 @@ void SimTemplate::timerEvent(QTimerEvent *event)
 
 void SimTemplate::renderDataLater(const QList<double>& data)
 {
-	qDebug() << "RenderDataLater called...";
+	//qDebug() << "RenderDataLater called...";
 	if (!m_update_pending) {
-			qDebug() << "\tWith no pending update.";
+			//qDebug() << "\tWith no pending update.";
 			m_update_pending = true;
 			result = data;
 			result_ready = true;
@@ -49,7 +49,7 @@ void SimTemplate::renderDataLater(const QList<double>& data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void SimTemplate::render(QPainter *p)
 {
-	qDebug() << "Render called.";
+	//qDebug() << "Render called.";
 	/*
     static const QPoint hourHand[3] = {
         QPoint(7, 8),
@@ -115,8 +115,8 @@ void SimTemplate::render(QPainter *p)
 
     p->setRenderHint(QPainter::Antialiasing);
 
-		QBrush brsh(Qt::SolidPattern);
-		QPen pen(brsh, 2, Qt::SolidLine);
+		QBrush brsh(walkerColor);
+		QPen pen(walkerColor);
 
     int side = qMin(width(), height());
     p->scale(side / 200.0, side / 200.0);
@@ -131,6 +131,5 @@ void SimTemplate::render(QPainter *p)
     	p->drawConvexPolygon(walker, 3);
 			p->restore();
 		}
-		qDebug() << "Post-send: "	<< result[0];
 	}
 }

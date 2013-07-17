@@ -61,8 +61,13 @@ Q_OBJECT
 
 	public:
 			Sim(){
+				int seed = rng.rand(10000000);
+				qDebug() << "SEED: "<<seed;
+				sim.SetRNGSeed(seed);
 				sim.LinearZoom(20);
 				sim.GenerateCubicLattice(3);
+				sim.RandomizeAngles();
+				sim.Setdt(.1);
 			}
 	public slots:
 			void doWork(const QString &parameter);

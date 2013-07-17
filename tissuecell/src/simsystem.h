@@ -64,6 +64,7 @@ namespace TissueCell{
 		}
 		void SetFadh(RealType n_Fadh){ Fadh = n_Fadh;}
 		void SetFrep(int n_Frep){ Frep = n_Frep;}
+		void Setdt(RealType n_dt){ dt = n_dt;}
 
 		void PrintParams();
 		

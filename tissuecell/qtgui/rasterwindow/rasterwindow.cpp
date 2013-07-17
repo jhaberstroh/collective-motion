@@ -57,9 +57,9 @@ RasterWindow::RasterWindow(QWindow *parent)
 //! [7]
 bool RasterWindow::event(QEvent *event)
 {
-	qDebug() << "Event called.";
+	//qDebug() << "Event called.";
 	if (event->type() == QEvent::UpdateRequest) {
-			qDebug() << "\tIt was an update request!";
+			//qDebug() << "\tIt was an update request!";
 			m_update_pending = false;
 			renderNow();
 			return true;
