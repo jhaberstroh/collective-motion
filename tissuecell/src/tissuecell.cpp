@@ -71,6 +71,7 @@ namespace TissueCell{
 		// Assertions to match the above definitions
 		// Furthermore: Do not allow a particle to step more than a box width.
 		//  (angle can rotate artibrarily)
+		assert(fmod( 0 + twoPi, twoPi) == 0);
 		assert(this->x < box_size);
 		assert(this->x >= 0);
 		assert(this->y < box_size);
@@ -101,46 +102,62 @@ namespace TissueCell{
 		RealType dy = cell2.y - cell1.y;
 		if (dx > box_size / 2.0){ dx -= box_size; }
 		if (dy > box_size / 2.0){ dy -= box_size; }
-		if (dx <-box_size / 2.0){ dx += box_size; }
-		if (dy <-box_size / 2.0){ dy += box_size; }
+		if (dx<=-box_size / 2.0){ dx += box_size; }
+		if (dy<=-box_size / 2.0){ dy += box_size; }
 		
-		assert(dx <= box_size / 2.0 && dx > -box_size / 2.0);
-		assert(dy <= box_size / 2.0 && dy > -box_size / 2.0);
+		assert(dx <= box_size / 2.0);
+		assert(dx > -box_size / 2.0);
+		assert(dy <= box_size / 2.0);
+		assert(dy > -box_size / 2.0);
 
 		RealType Fmag;
 		RealType dist = sqrt(dx*dx + dy*dy);
-		dx /= dist;
-		dy /= dist;
+		if (dist == 0){ 
+			if (Frep != 0){
+				throw std::domain_error("Interacting particles are stacked, but there is a non-zero repulsion strength. Thus, the interaction is divergent.");
+			}
+			return 0;
+		}
+		else{
+			dx /= dist;
+			dy /= dist;
 
-		if (dist > Rcut){
-			Fmag = 0;
+			if (dist > Rcut){
+				Fmag = 0;
+				return Fmag;
+			}
+			if (dist < Req){
+				// Flipped the convention from PRE 74, 061908
+				Fmag = Frep * (Req - dist)/Req;
+				assert(Fmag >= 0);
+			}
+			if (dist > Req){
+				// Flipped the convention from PRE 74, 061908
+				Fmag = Fadh * (Req - dist)/(Rcut - Req);
+				assert(Fmag <= 0);
+			}
+	
+	
+			// Normalized dist vector points from cell1 to cell 2;
+			cell2.Fx += dx * Fmag;
+			cell2.Fy += dy * Fmag;
+	
+			cell1.Fx -= dx * Fmag;
+			cell1.Fy -= dy * Fmag;
 			return Fmag;
 		}
-		if (dist < Req){
-			// Flipped the convention from PRE 74, 061908
-			Fmag = Frep * (Req - dist)/Req;
-			assert(Fmag >= 0);
-		}
-		if (dist > Req){
-			// Flipped the convention from PRE 74, 061908
-			Fmag = Fadh * (Req - dist)/(Rcut - Req);
-			assert(Fmag <= 0);
-		}
-
-
-		// Normalized dist vector points from cell1 to cell 2;
-		cell2.Fx += dx * Fmag;
-		cell2.Fy += dy * Fmag;
-
-		cell1.Fx -= dx * Fmag;
-		cell1.Fy -= dy * Fmag;
-		return Fmag;
+	}
+	
+	void CellData::CheckRep(RealType box_size){
+		assert(x <  box_size);
+		assert(x >= box_size);
+		assert(y <  box_size);
+		assert(y >= box_size);
 	}
 
 	void CellData::print(){
 		std::cout << "Pos, angle: (" << x <<", "<< y <<"), "<< angle << std::endl;
 		std::cout << "Force: (" << Fx <<", "<< Fy <<")"<<std::endl;
-
 	}
 }
 

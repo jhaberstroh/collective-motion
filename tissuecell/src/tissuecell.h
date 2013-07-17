@@ -48,6 +48,7 @@ namespace TissueCell{
 		int TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq=false);
 		
 		void RandomizeAngle(MTRand& rng){ angle = rng.rand() * 2 * 3.14159265359;}
+		void CheckRep(RealType box_size);
 
 		void print();
 	};

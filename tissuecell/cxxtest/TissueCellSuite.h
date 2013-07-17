@@ -12,14 +12,16 @@ private:
 		TissueCell::RealType err;
 		// Floating point error constrained below 6 decimial points
 		TissueCell::Unit u1, u2;
+		int seed;
 
 
 public:
 	void setUp(){
-		rng = MTRand(90210);
 		pi = 3.14159265359;
 		err = .000001;
 		// Floating point error constrained below 6 decimial points
+		seed = rng.rand(10000000);
+		std::cout << "SEED: " << seed << std::endl;
 	}
 
 	void testCreate(void){
@@ -86,7 +88,7 @@ public:
 	}
 
 	void testLRUDForceReal(void){
-		MTRand rng;
+		MTRand rng(seed);
 		TissueCell::RealType pi = 3.14159265359;
 		TissueCell::RealType err = .000001;
 		// Floating point error constrained below 6 decimial points
@@ -187,8 +189,9 @@ public:
 	}
 
 
-	void testFailure(void){
+	void testEquilibrate(void){
 		TissueCell::SimSystem simulation;
+		simulation.SetRNGSeed(seed);
 
 		simulation.GenerateNRandom(10000);
 		
@@ -199,27 +202,50 @@ public:
 
 	void testPile(void){
 		TissueCell::SimSystem simulation;
+		simulation.SetRNGSeed(seed);
 		simulation.SetFadh(0);
 		simulation.SetFrep(0);
 
 		simulation.GenerateNPile(10000, 5, 5);
 		simulation.RandomizeAngles();
 		
-		simulation.TimeStep();
+		simulation.EqStep();
 
 		double xmean = 0;
 		double ymean = 0;
+		double xsigma = 0;
+		double ysigma = 0;
 		TissueCell::Vector data(simulation.ViewSystem());
 		for (auto& cell : data){
 			xmean += cell.x;
 			ymean += cell.y;
+			xsigma += (cell.x - 5) * (cell.x - 5);
+			ysigma += (cell.y - 5) * (cell.y - 5);
 		}
 
 		xmean /= data.size();
 		ymean /= data.size();
+		xsigma = sqrt(xsigma) / data.size();
+		ysigma = sqrt(ysigma) / data.size();
 
-		TS_ASSERT_DELTA(xmean, 5, .001);
-		TS_ASSERT_DELTA(ymean, 5, .001);
+		TS_ASSERT_DELTA(xmean, 5, .02);
+		TS_ASSERT_DELTA(ymean, 5, .02);
+		TS_ASSERT_DELTA(xsigma, ysigma, .01);
+	}	
+
+	void testWander(void){
+		TissueCell::SimSystem simulation;
+		simulation.SetRNGSeed(seed);
+
+		simulation.GenerateCubicLattice(10);
+		simulation.RandomizeAngles();
+	
+		for (int i = 0 ; i < 1000 ; i ++){	
+			simulation.TimeStep();
+		}
+
+		// No assertions in this test, just wandering.
+
 	}
 
 };

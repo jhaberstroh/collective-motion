@@ -115,7 +115,7 @@ void SimTemplate::render(QPainter *p)
 		p->setBrush(brsh);
 
 		for (int i = 0 ; i < result.size() / 2 ; i++){
-			p->drawEllipse(result[2*i], result[2*i+1], 10,10);
+			p->drawEllipse(result[2*i], result[2*i+1], 1, 1);
 		}
 		qDebug() << "Post-send: "	<< result[0];
 	}
