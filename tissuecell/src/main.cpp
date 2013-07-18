@@ -1,8 +1,4 @@
-#include "tissuecell.h"
-#include "MersenneTwister.h"
-#include <algorithm>
-#include <vector>
-
+#include "tissuesimulation.h"
 
 int main(int argc, char ** argv){
 	TissueSimulation sim;

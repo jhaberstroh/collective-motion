@@ -17,8 +17,13 @@
 
 class TissueCell : public XYAData{
 	public:
+		typedef XYAData::RealType RealType;
 		RealType Fx;
 		RealType Fy;
+
+		// Required constructor from XYAData
+		TissueCell(RealType mx, RealType my, RealType ma): XYAData(mx,my,ma), Fx(0), Fy(0){}
+		TissueCell(): XYAData(), Fx(0), Fy(0){}
 
 		int TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq=false);
 		RealType Interact(TissueCell& cell2, RealType r_cut, RealType r_eq, RealType box_size, RealType F_adh, RealType F_rep);
@@ -29,8 +34,8 @@ class TissueCell : public XYAData{
 
 class TissueSimulation : public XYASimulation<TissueCell>{
 	private:
-		typedef XYASimulation<TissueCell> XYASim
-		using XYAData::RealType;
+		typedef XYASimulation<TissueCell> XYASim;
+		typedef XYAData::RealType RealType;
 
 		/// Movement parameters
 		RealType dt;
@@ -52,8 +57,6 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 
 		TissueSimulation(bool print_out=false):
 						 XYASim(),
-						 m_box_size(__MC_box_size_DFT),
-						 XYASimulation(),
 						 v0(__MC_v0_DFT),
 						 mob(__MC_mob_DFT),
 						 t_relax(__MC_t_relax_DFT),
@@ -62,6 +65,8 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 						 Frep(__MC_Frep_DFT),
 						 Req(__MC_Req_DFT),
 						 Rcut(__MC_Rcut_DFT){
+		// Overwrite m_box_size default in XYASimulation
+		 m_box_size = __MC_box_size_DFT;
 			if (print_out){
 				PrintParams();
 			}

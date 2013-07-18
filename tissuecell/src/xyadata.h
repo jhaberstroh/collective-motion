@@ -1,12 +1,27 @@
 #ifndef __XYADATA_H__
 #define __XYADATA_H__
 
+/*-------------------------------------------------------------
+ * xyadata.h:
+ * 	XYAData base class
+ * 	XYAVec templated class
+ * 	XYAConst namespace
+ *
+ * RULES not specified by compiler:
+ * 	1. Children of XYAData must define their constructor(Realtype mx, RealType my, RealType ma)
+ *
+ *
+ */
+
+
+
 #ifdef DP
 #define MACRO_PRECISION double
 #else
 #define MACRO_PRECISION float
 #endif
 
+#include <vector>
 
 class XYAData{
 	public:
@@ -17,18 +32,18 @@ class XYAData{
 		RealType x;
 		RealType y;
 		
-		XYAData(RealType mx, RealType my, RealType ma): angle(ma), x(mx), y(my), Fx(0), Fy(0) {};
-		XYAData(): angle(0), x(0), y(0), Fx(0), Fy(0) {};
+		// Subclasses are REQUIRED to define this constructor
+		XYAData(RealType mx, RealType my, RealType ma): angle(ma), x(mx), y(my) {};
+		XYAData(): angle(0), x(0), y(0) {};
 
 
-
-		// Must be templated with a subclass for functionality
+		// Must be templated with a subclass of this (XYAData)
 		template <class XYADataType>
 		static XYADataType Create_xya(RealType mx, RealType my, RealType ma){
 			return XYADataType(mx,my,ma);
 		}
 
-		// Must be templated with a subclass for functionality
+		// Must be templated with a subclass of this (XYAData)
 		template <class XYADataType>
 		static XYADataType Create_xy(RealType mx, RealType my){
 			return XYADataType(mx,my,0);
@@ -39,23 +54,24 @@ class XYAData{
 template <class XYADataType>
 class XYAVec
 {
-	typedef std::vector<XYADataType> TypedVec;
-	using XYAData::RealType;
+	public:
+		typedef std::vector<XYADataType> TypedVec;
+		typedef XYAData::RealType RealType;
 
-	static void GenerateXYA(TypedVec& data, RealType x, RealType y, RealType a){
-		data.push_back(Create_xya<XYADataType>(x,y,a));
-	}
-
-	// Must return by value because the return is going out of scope
-	static XYARep GetXYARep(TypedVec& data){
-		XYARep out;
-		for (auto xya : data){
-			out.push_back(xya.angle);
-			out.push_back(xya.x);
-			out.push_back(xya.y);
+		static void GenerateXYA(TypedVec& data, RealType x, RealType y, RealType a){
+			data.push_back(XYAData::Create_xya<XYADataType>(x,y,a));
 		}
-		return out;
-	}
+
+		// Must return by value because the return is going out of scope
+		static XYAData::XYARep GetXYARep(TypedVec& data){
+			XYAData::XYARep out;
+			for (auto xya : data){
+				out.push_back(xya.angle);
+				out.push_back(xya.x);
+				out.push_back(xya.y);
+			}
+			return out;
+		}
 };
 
 

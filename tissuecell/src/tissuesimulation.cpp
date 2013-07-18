@@ -21,7 +21,7 @@ void TissueSimulation::PrintParams(){
 	std::cout << "Rcut = " << Rcut << std::endl;
 }
 
-void TissueSimulation::LinearZoom(double zoom_factor){
+void TissueSimulation::LinearZoom(RealType zoom_factor){
 	XYASim::LinearZoom(zoom_factor);
 	v0 *= zoom_factor;
 	mob *= zoom_factor;
@@ -36,11 +36,11 @@ void TissueSimulation::TimeStep(){
 	// Also skip the diagonal, self-interaction
 	for (uint i = 0 ; i < m_sim_data.size() ; ++i){
 		for (uint j = i + 1 ; j < m_sim_data.size() ; ++j){
-			m_sim_data[i].Interact(m_sim_data[j], Rcut, Req, box_size, Fadh, Frep);
+			m_sim_data[i].Interact(m_sim_data[j], Rcut, Req, m_box_size, Fadh, Frep);
 		}
 	}
 	for (auto& cell : m_sim_data){
-		cell.TakeStep(dt, v0, mob, t_relax, noise, box_size, rng);
+		cell.TakeStep(dt, v0, mob, t_relax, noise, m_box_size, m_rng);
 	}
 }
 
@@ -52,11 +52,11 @@ int TissueSimulation::EqStep(){
 	int equil_fail = 0;
 	for (uint i = 0 ; i < m_sim_data.size() ; ++i){
 		for (uint j = i + 1 ; j < m_sim_data.size() ; ++j){
-			Interact(m_sim_data[i], m_sim_data[j], Rcut, Req, box_size, Fadh, Frep);
+			Interact(m_sim_data[i], m_sim_data[j], Rcut, Req, m_box_size, Fadh, Frep);
 		}
 	}
 	for (auto& cell : m_sim_data){
-		int fail = cell.TakeStep(dt, v0, mob, t_relax, noise, box_size, rng, true);
+		int fail = cell.TakeStep(dt, v0, mob, t_relax, noise, m_box_size, rng, true);
 		if (fail){
 			equil_fail = 1;
 		}
@@ -206,7 +206,7 @@ int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_rela
 
 
 
-RealType TissueCell::Interact(Unit& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
+TissueCell::RealType TissueCell::Interact(TissueCell& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
 		if (Rcut <= Req){ throw std::invalid_argument("Rcut <= Req"); }
 		if (Rcut <= 0){ throw std::invalid_argument("Rcut <= 0"); }
 		if (Req <= 0){ throw std::invalid_argument("Req <= 0"); }

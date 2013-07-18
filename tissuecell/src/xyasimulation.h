@@ -7,9 +7,8 @@
 template<class XYADataType>
 class XYASimulation{
 	public:
-		using XYAData::RealType;
-		using XYAData::XYARep;
-		using XYAConst::twoPi;
+		typedef XYAData::RealType RealType;
+		typedef XYAData::XYARep XYARep;
 		RealType dt;
 
 	protected: 
@@ -18,7 +17,7 @@ class XYASimulation{
 		int m_seed;
 		MTRand m_rng;
 		RealType m_total_time;
-		XYAVec<XYADataType>::TypedVec m_sim_data;
+		typename XYAVec<XYADataType>::TypedVec m_sim_data;
 		RealType m_zoom;
 		RealType m_box_size;
 
@@ -27,19 +26,19 @@ class XYASimulation{
 			return m_seed; 
 		}
 		inline void set_seed(int new_seed){
-			rng.seed(new_seed);
+			m_rng.seed(new_seed);
 		}
 		RealType get_zoom(){ return m_zoom; }
 
 		XYASimulation(): 
 					dt(.01),
-					m_box_size(10),
-					m_zoom(1){
+					m_zoom(1),
+					m_box_size(10){
 			m_seed = m_rng.rand(10000000);
 			set_seed(m_seed);
 		}
 		XYASimulation(int seed): XYASimulation(){
-			set_seed(seed)
+			set_seed(seed);
 		}
 		XYARep ViewSystem(){
 			return XYAVec<XYADataType>::GetXYARep(m_sim_data);
@@ -48,26 +47,23 @@ class XYASimulation{
 
 		void RandomizeAngles(){
 			for (auto& xya : m_sim_data){
-				xya.angle = rng.rand() * twoPi;
+				xya.angle = m_rng.rand() * XYAConst::twoPi;
 			}
 		}
 
 		void GenerateSquareLattice(unsigned int n_in_length){
 			RealType spacing = m_box_size / n_in_length;
-			for (int i = 0 ; i < n_in_length; i++){
-				for (int j = 0 ; j < n_in_length; j++){
-					XYAVec<XYADataType>::GenerateXYA(m_sim_data, spacing * i, spacing * j);
+			for (unsigned int i = 0 ; i < n_in_length; i++){
+				for (unsigned int j = 0 ; j < n_in_length; j++){
+					XYAVec<XYADataType>::GenerateXYA(m_sim_data, spacing * i, spacing * j, 0);
 				}
 			}
 		}
-
 		void GenerateNRandom(unsigned int N){
 			for (int i = 0 ; i < N ; i++){
-				XYAVec<XYADataType>::GenerateXYA(m_sim_data, rand() * m_box_size, rand() * m_box_size, 0);
+				XYAVec<XYADataType>::GenerateXYA(m_sim_data, rand()*m_box_size, rand()*m_box_size, 0);
 			}
-			m_sim_data.GenerateNRandom(n_in_length);
 		}
-
 		void GenerateNPile(uint N, RealType x, RealType y){
 			for (int i = 0 ; i < N ; i++){
 				XYAVec<XYADataType>::GenerateXYA(m_sim_data, x, y, 0);
