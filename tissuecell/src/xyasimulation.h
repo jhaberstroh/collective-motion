@@ -73,7 +73,9 @@ class XYASimulation{
 // Functions that intend extension from subclass, but does not require it.
 // PrintParams() may be incomplete
 		void PrintParams(){ 
-			std::cout << "dt:\t" << dt << std::endl; 
+			std::cout << "dt:\t\t" << dt << std::endl; 
+			std::cout << "box_size:\t" << m_box_size << std::endl; 
+			std::cout << "zoom:\t\t" << m_zoom	<< std::endl; 
 		}
 // LinearZoom() may need to scale parameters with dimension length
 		void LinearZoom(RealType zoom_factor){

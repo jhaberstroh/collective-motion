@@ -33,8 +33,8 @@ class XYAData{
 		RealType y;
 		
 		// Subclasses are REQUIRED to define this constructor
-		XYAData(RealType mx, RealType my, RealType ma): angle(ma), x(mx), y(my) {};
-		XYAData(): angle(0), x(0), y(0) {};
+		XYAData(RealType mx, RealType my, RealType ma): angle(ma), x(mx), y(my) {}
+		XYAData(): angle(0), x(0), y(0) {}
 
 
 		// Must be templated with a subclass of this (XYAData)

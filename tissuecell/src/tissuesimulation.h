@@ -4,13 +4,14 @@
 #include "xyasimulation.h"
 #include "xyadata.h"
 
+#define __MC_dt_DFT .01
 #define __MC_v0_DFT 1
 #define __MC_mob_DFT 1
 #define __MC_t_relax_DFT 1
 #define __MC_noise_DFT 0
 #define __MC_box_size_DFT 10
 #define __MC_Fadh_DFT .75
-#define __MC_Frep_DFT 3
+#define __MC_Frep_DFT 10
 #define __MC_Req_DFT 1
 #define __MC_Rcut_DFT 2
 
@@ -36,9 +37,8 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 	private:
 		typedef XYASimulation<TissueCell> XYASim;
 		typedef XYAData::RealType RealType;
-
+		typedef std::vector<TissueCell> TissueVec;
 		/// Movement parameters
-		RealType dt;
 		RealType v0;
 		RealType mob;
 		RealType t_relax;
@@ -53,6 +53,8 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 		RealType m_total_time;
 
 	public:
+		const TissueVec& ViewRaw(){ return m_sim_data; }
+
 		//RealType box_size(){ return box_size;}
 
 		TissueSimulation(bool print_out=false):
@@ -66,7 +68,8 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 						 Req(__MC_Req_DFT),
 						 Rcut(__MC_Rcut_DFT){
 		// Overwrite m_box_size default in XYASimulation
-		 m_box_size = __MC_box_size_DFT;
+		  dt = __MC_dt_DFT;
+		 	m_box_size = __MC_box_size_DFT;
 			if (print_out){
 				PrintParams();
 			}
@@ -81,6 +84,7 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 		void SetFadh(RealType n_Fadh){ Fadh = n_Fadh;}
 		void SetFrep(int n_Frep){ Frep = n_Frep;}
 		void Setdt(RealType n_dt){ dt = n_dt;}
+
 
 		//int EqStep();
 		//int Equilibrate(int n_equil);

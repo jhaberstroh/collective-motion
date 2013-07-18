@@ -99,7 +99,6 @@ int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_rela
 		//RealType xxxxx = this->x;
 		//RealType yyyyy = this->y;
 		//RealType aaaangle = this->angle;
-		
 
 		RealType dxF = (mob * Fx) * dt;
 		RealType dxV = (std::cos(this->angle) * v0) * dt;
@@ -139,7 +138,7 @@ int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_rela
 
 #ifndef FORCE_WARN_OFF
 		if (vmag > 10){
-			std::cout << "WARNING: Assuming Req of 1: Single step is on the order of Req. Check your timestep and interaction parameters." << std::endl;
+			std::cout << "WARNING: Assuming Req of 1: Single step is on the order of Req; vmag = " << vmag <<". Check your timestep and interaction parameters." << std::endl;
 		}
 #endif
 
