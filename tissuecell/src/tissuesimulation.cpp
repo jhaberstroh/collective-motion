@@ -1,5 +1,6 @@
-#include "tissuecell.h"
+#include "tissuesimulation.h"
 #include "MersenneTwister.h"
+#include <iostream>
 #include <typeinfo>
 #include <algorithm>
 #include <assert.h>
@@ -8,10 +9,85 @@
 #include <vector>
 #include <functional>
 
+void TissueSimulation::PrintParams(){
+	XYASim::PrintParams();
+	std::cout << "v0 = " << v0 << std::endl;
+	std::cout << "mob = " << mob << std::endl;
+	std::cout << "t_relax = " << t_relax << std::endl;
+	std::cout << "noise = " << noise << std::endl;
+	std::cout << "Fadh = " << Fadh << std::endl;
+	std::cout << "Frep = " << Frep << std::endl;
+	std::cout << "Req = " << Req << std::endl;
+	std::cout << "Rcut = " << Rcut << std::endl;
+}
 
-namespace TissueCell{
-	int CellData::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq)
-	{
+void TissueSimulation::LinearZoom(double zoom_factor){
+	XYASim::LinearZoom(zoom_factor);
+	v0 *= zoom_factor;
+	mob *= zoom_factor;
+	Req *= zoom_factor;
+	Rcut *= zoom_factor;
+}
+
+
+void TissueSimulation::TimeStep(){
+	m_total_time += dt;
+	// Sum only the upper-half box to avoid interaction repetition
+	// Also skip the diagonal, self-interaction
+	for (uint i = 0 ; i < m_sim_data.size() ; ++i){
+		for (uint j = i + 1 ; j < m_sim_data.size() ; ++j){
+			m_sim_data[i].Interact(m_sim_data[j], Rcut, Req, box_size, Fadh, Frep);
+		}
+	}
+	for (auto& cell : m_sim_data){
+		cell.TakeStep(dt, v0, mob, t_relax, noise, box_size, rng);
+	}
+}
+
+/*
+int TissueSimulation::EqStep(){
+	m_total_time += dt;
+	// Sum only the upper-half box to avoid interaction repetition
+	// Also skip the diagonal, self-interaction
+	int equil_fail = 0;
+	for (uint i = 0 ; i < m_sim_data.size() ; ++i){
+		for (uint j = i + 1 ; j < m_sim_data.size() ; ++j){
+			Interact(m_sim_data[i], m_sim_data[j], Rcut, Req, box_size, Fadh, Frep);
+		}
+	}
+	for (auto& cell : m_sim_data){
+		int fail = cell.TakeStep(dt, v0, mob, t_relax, noise, box_size, rng, true);
+		if (fail){
+			equil_fail = 1;
+		}
+	}
+	return equil_fail;
+}
+
+
+int TissueSimulation::Equilibrate(int n_equil){
+	int total_steps = 0;
+	int pass_in_a_row = 0;
+	while (pass_in_a_row < n_equil){
+		++total_steps;
+		int fail = EqStep();
+
+		if (fail){
+			pass_in_a_row = 0;
+		}
+		else{
+			++pass_in_a_row;
+		}
+	}
+	return total_steps;
+}
+
+*/
+
+
+
+
+int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_relax, RealType noise, RealType box_size, MTRand& rng, bool eq){
 		int rtn = 0;
 		// Handle invalid arguments
 		if (mob < 0){ throw std::invalid_argument("mob < 0"); }
@@ -126,11 +202,11 @@ namespace TissueCell{
 		this->Fy = 0;
 		
 		return rtn;
-	}
+}
 
 
 
-	RealType Interact(Unit& cell1, Unit& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
+RealType TissueCell::Interact(Unit& cell2, RealType Rcut, RealType Req, RealType box_size, RealType Fadh, RealType Frep){
 		if (Rcut <= Req){ throw std::invalid_argument("Rcut <= Req"); }
 		if (Rcut <= 0){ throw std::invalid_argument("Rcut <= 0"); }
 		if (Req <= 0){ throw std::invalid_argument("Req <= 0"); }
@@ -140,8 +216,8 @@ namespace TissueCell{
 
 	
 		// Vector points from cell1 to cell2
-		RealType dx = cell2.x - cell1.x;
-		RealType dy = cell2.y - cell1.y;
+		RealType dx = cell2.x - this->x;
+		RealType dy = cell2.y - this->y;
 		if (dx > box_size / 2.0){ dx -= box_size; }
 		if (dy > box_size / 2.0){ dy -= box_size; }
 		if (dx<=-box_size / 2.0){ dx += box_size; }
@@ -196,26 +272,24 @@ namespace TissueCell{
 			cell2.Fx += dx * Fmag;
 			cell2.Fy += dy * Fmag;
 	
-			cell1.Fx -= dx * Fmag;
-			cell1.Fy -= dy * Fmag;
+			this->Fx -= dx * Fmag;
+			this->Fy -= dy * Fmag;
 
 			
 
 			return Fmag;
 		}
-	}
+}
 	
-	void CellData::CheckRep(RealType box_size){
-		assert(x <  box_size);
-		assert(x >= box_size);
-		assert(y <  box_size);
-		assert(y >= box_size);
-	}
-
-	void CellData::print(){
-		std::cout << "Pos, angle: (" << x <<", "<< y <<"), "<< angle << std::endl;
-		std::cout << "Force: (" << Fx <<", "<< Fy <<")"<<std::endl;
-	}
+void TissueCell::CheckRep(RealType box_size){
+	assert(x <  box_size);
+	assert(x >= box_size);
+	assert(y <  box_size);
+	assert(y >= box_size);
 }
 
+void TissueCell::print(){
+	std::cout << "Pos, angle: (" << x <<", "<< y <<"), "<< angle << std::endl;
+	std::cout << "Force: (" << Fx <<", "<< Fy <<")"<<std::endl;
+}
 

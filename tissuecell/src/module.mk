@@ -1,7 +1,5 @@
-SRC += src/tissuecell.cpp
-SRC += src/analyze.cpp
-SRC += src/simsystem.cpp
-HEADERS += src/tissuecell.h
-HEADERS += src/analyze.h
-HEADERS += src/simsystem.h
+SRC += src/tissuesimulation.cpp
+HEADERS += src/tissuesimulation.h
+HEADERS += src/xyadata.h
+HEADERS += src/xyasimulation.h
 MAIN += src/main.cpp
