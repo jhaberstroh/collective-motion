@@ -72,6 +72,7 @@ Q_OBJECT
 				sim.set_seed(seed);
 				sim.LinearZoom(20);
 				sim.SetFrep(12);
+				sim.Setnoise(.999999);
 				sim.GenerateSquareLattice(10);
 				sim.RandomizeAngles();
 				sim.dt = .01;

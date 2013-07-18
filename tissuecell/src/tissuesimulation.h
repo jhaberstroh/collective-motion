@@ -11,9 +11,9 @@
 #define __MC_noise_DFT 0
 #define __MC_box_size_DFT 10
 #define __MC_Fadh_DFT .75
-#define __MC_Frep_DFT 10
-#define __MC_Req_DFT 1
-#define __MC_Rcut_DFT 2
+#define __MC_Frep_DFT 15
+#define __MC_Req_DFT .8333333
+#define __MC_Rcut_DFT 1
 
 
 class TissueCell : public XYAData{
@@ -83,6 +83,7 @@ class TissueSimulation : public XYASimulation<TissueCell>{
 
 		void SetFadh(RealType n_Fadh){ Fadh = n_Fadh;}
 		void SetFrep(int n_Frep){ Frep = n_Frep;}
+		void Setnoise(int n_noise){ noise = n_noise;}
 		void Setdt(RealType n_dt){ dt = n_dt;}
 
 

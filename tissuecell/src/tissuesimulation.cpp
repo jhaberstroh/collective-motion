@@ -112,7 +112,7 @@ int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_rela
 
 		RealType dtheta = 0;
 		// arcsin of a cross product of two normalized vecors will give the deflection in theta.
-		RealType step_noise = rng.rand() * noise;
+		RealType step_noise = (rng.rand() - .5) * noise;
 		if (vmag != 0){
 			try{
 				dtheta = (dt / t_relax) * std::asin( (std::cos(angle) * dy - std::sin(angle) * dx) / vmag);
@@ -145,6 +145,7 @@ int TissueCell::TakeStep(RealType dt, RealType v0, RealType mob, RealType t_rela
 		this->x += dx;
 		this->y += dy;
 
+		// =========================================================================================
 		// Apply periodic topology:
 
 		// Map x and y [0, box_size) periodically
