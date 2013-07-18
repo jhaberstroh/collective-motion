@@ -87,6 +87,12 @@ class XYASimulation{
 			}
 		}
 
+		void Reset(bool really = false){
+			if (really == true){
+				m_sim_data.clear();
+			}
+		}
+
 // The only true virtual function, as it should be.
 		virtual void TimeStep(){};
 };

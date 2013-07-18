@@ -46,8 +46,7 @@
 
 #include "rasterwindow.h"
 #include "MersenneTwister.h"
-#include "tissuecell.h"
-#include "simsystem.h"
+#include "tissuesimulation.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Simulation object, to run in a thread
@@ -57,7 +56,7 @@ class Sim : public QObject
 Q_OBJECT
 			QThread workerThread;
 			MTRand rng;
-			TissueCell::SimSystem sim;
+			TissueSimulation sim;
 
 	public:
 			Sim(int seed_in = -1){
@@ -70,12 +69,12 @@ Q_OBJECT
 					seed = seed_in; 
 					qDebug() << "SEED-IN: "<<seed;
 				}
-				sim.SetRNGSeed(seed);
+				sim.set_seed(seed);
 				sim.LinearZoom(20);
 				sim.SetFrep(12);
-				sim.GenerateCubicLattice(10);
+				sim.GenerateSquareLattice(10);
 				sim.RandomizeAngles();
-				sim.Setdt(.01);
+				sim.dt = .01;
 			}
 	public slots:
 			void doWork(const QString &parameter);

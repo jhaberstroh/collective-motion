@@ -11,7 +11,7 @@ void Sim::doWork(const QString &parameter) {
 
 void Sim::formatAndEmit() {
 		QList<double> dat_out;
-		for (auto cell : sim.ViewSystem()){
+		for (auto cell : sim.ViewRaw()){
 			dat_out.append(cell.x);
 			dat_out.append(cell.y);
 			dat_out.append(cell.angle);
