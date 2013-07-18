@@ -24,7 +24,7 @@ public:
 	void testOneStep(void){
 		TissueSimulation sim;
 
-		sim.GenerateSquareLattice(3);
+		sim.GenerateSquareLattice(1);
 		sim.TimeStep();
 	}
 
