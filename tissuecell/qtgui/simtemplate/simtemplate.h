@@ -73,7 +73,7 @@ Q_OBJECT
 				sim.LinearZoom(20);
 				sim.SetFrep(12);
 				sim.Setnoise(.999999);
-				sim.GenerateSquareLattice(10);
+				sim.GenerateSquareLattice(20);
 				sim.RandomizeAngles();
 				sim.dt = .01;
 			}
@@ -97,12 +97,14 @@ Q_OBJECT
 			QList<double> result;
 			bool result_ready;
 			int m_timerId;
+			int m_gui_size;
 
 public:
 	SimTemplate(int seed_in):RasterWindow()
 	{
     setTitle("Cell Tissue Simulation");
-    resize(200, 200);
+		m_gui_size = 300;
+    resize(m_gui_size, m_gui_size);
 
 		result_ready = false;
 

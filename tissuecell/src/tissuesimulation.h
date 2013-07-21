@@ -9,7 +9,7 @@
 #define __MC_mob_DFT 1
 #define __MC_t_relax_DFT 1
 #define __MC_noise_DFT 0
-#define __MC_box_size_DFT 10
+#define __MC_box_size_DFT 20
 #define __MC_Fadh_DFT .75
 #define __MC_Frep_DFT 15
 #define __MC_Req_DFT .8333333

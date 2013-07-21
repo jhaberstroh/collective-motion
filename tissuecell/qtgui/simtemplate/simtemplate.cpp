@@ -119,7 +119,7 @@ void SimTemplate::render(QPainter *p)
 		QPen pen(walkerColor);
 
     int side = qMin(width(), height());
-    p->scale(side / 200.0, side / 200.0);
+    p->scale(side / double(m_gui_size * 1.25), side / double(m_gui_size * 1.25));
 
 		p->setPen(pen);
 		p->setBrush(brsh);
