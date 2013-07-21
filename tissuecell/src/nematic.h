@@ -2,28 +2,30 @@
 #define __NEMATICSIM_H_DEFINED__
 
 
+#include "xyadata.h"
 #include "xyasimulation.h"
 
 class NematicSim : public XYASimulation<XYAData>
 {
-	RealType cutoff;
-	RealType noise;
-	RealType velocity;
+	public:
+		RealType cutoff;
+		RealType noise;
+		RealType velocity;
+	
+		NematicSim():
+			XYASimulation<XYAData>(),
+			cutoff(1.5),
+			noise(.1),
+			velocity(1)
+		{}
 
-	NematicSim():
-		XYASimulation<XYAData>(),
-		cutoff(1.5),
-		noise(.1),
-		velocity(1)
-	{}
+		virtual void TimeStep();
 
-	virtual void TimeStep();
-
-	//typename XYAVec<XYADataType>::TypedVec m_sim_data;
-	//MTRand m_rng;
-	//RealType m_box_size;
-	//RealType dt;
-}
+		//typename XYAVec<XYADataType>::TypedVec m_sim_data;
+		//MTRand m_rng;
+		//RealType m_box_size;
+		//RealType dt;
+};
 
 
 

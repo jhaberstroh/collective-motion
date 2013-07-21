@@ -47,6 +47,7 @@
 #include "rasterwindow.h"
 #include "MersenneTwister.h"
 #include "tissuesimulation.h"
+#include "nematic.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Simulation object, to run in a thread
@@ -56,7 +57,7 @@ class Sim : public QObject
 Q_OBJECT
 			QThread workerThread;
 			MTRand rng;
-			TissueSimulation sim;
+			NematicSim sim;
 
 	public:
 			Sim(int seed_in = -1){
@@ -71,8 +72,6 @@ Q_OBJECT
 				}
 				sim.set_seed(seed);
 				sim.LinearZoom(20);
-				sim.SetFrep(12);
-				sim.Setnoise(.999999);
 				sim.GenerateSquareLattice(20);
 				sim.RandomizeAngles();
 				sim.dt = .01;
